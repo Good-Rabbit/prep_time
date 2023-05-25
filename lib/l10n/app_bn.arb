@@ -1,0 +1,21 @@
+{
+  "@@locale": "bn",
+  "appname": "প্রেপ টাইম",
+  "board": "বোর্ড",
+  "classValue": "ক্লাস",
+  "courses": "কোর্সেস",
+  "darkTheme": "অন্ধকার থিম",
+  "examId": "পরীক্ষা আইডি",
+  "examOngoing": "পরীক্ষা ইতোমদ্ধে চলছে!",
+  "exams": "পরীক্ষা",
+  "home": "হোম",
+  "language": "বাংলা",
+  "lightTheme": "উজ্জ্বল থিম",
+  "live": "লাইভ",
+  "liveExam": "লাইভ পরীক্ষা",
+  "liveExams": "লাইভ পরীক্ষাসমূহ",
+  "newCourses": "নতুন কোর্সসমূহ",
+  "ok": "থিক আছে",
+  "run": "দৌড়!",
+  "takeTest": "পরীক্ষা দিন"
+}

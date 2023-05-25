@@ -1,0 +1,34 @@
+{
+  "@appname": {
+    "description": "The app name"
+  },
+  "@hello": {
+    "description": "Greeting the user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@language": {
+    "description": "The current language"
+  },
+  "appname": "Prep Time",
+  "board": "Board",
+  "classValue": "Class",
+  "courses": "Courses",
+  "darkTheme": "Dark Theme",
+  "examId": "Exam ID",
+  "examOngoing": "Exam is already ongoing!",
+  "exams": "Exams",
+  "home": "Home",
+  "language": "English",
+  "lightTheme": "Light Theme",
+  "live": "Live",
+  "liveExam": "Live Exam",
+  "liveExams": "Live Exams",
+  "newCourses": "New Courses",
+  "ok": "Okay",
+  "run": "Run!",
+  "takeTest": "Take test"
+}
