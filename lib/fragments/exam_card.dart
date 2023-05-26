@@ -81,6 +81,15 @@ class ExamCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
+                    if (exam.start.isBefore(DateTime.now()))
+                      const Icon(
+                        Icons.circle,
+                        color: Colors.red,
+                        size: 17,
+                      ),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Text(
                       getFormattedTime(exam.start),
                       style: TextStyle(
@@ -91,7 +100,7 @@ class ExamCard extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      '${exam.duration.inMinutes  .toString()} minutes',
+                      '${exam.duration.inMinutes.toString()} minutes',
                       style: const TextStyle(
                         color: Colors.orange,
                       ),

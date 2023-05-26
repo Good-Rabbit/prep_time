@@ -27,6 +27,7 @@ class _TestTakerBodyState extends State<TestTakerBody> {
   List<McqQuestion>? mcqQuestions;
   List<String> selectedAnswers = [];
   int selected = 1;
+  int marks = 0;
 
   @override
   void initState() {
@@ -36,12 +37,6 @@ class _TestTakerBodyState extends State<TestTakerBody> {
       selectedAnswers.add('');
     }
 
-    // * Submit once time is up
-    Future.delayed(
-        context.read<ExamProvider>().examTill!.difference(DateTime.now()), () {
-      context.go('/exam', extra: widget.exam);
-    });
-
     if (context.read<ExamProvider>().answers.isEmpty) {
       context.read<ExamProvider>().setOngoingExamAnswers(selectedAnswers);
     }
@@ -49,19 +44,99 @@ class _TestTakerBodyState extends State<TestTakerBody> {
 
   @override
   Widget build(BuildContext context) {
-    int questionCount = 0;
-    mcqQuestions = widget.questions.map(
-      (e) {
-        return McqQuestion(
-          question: e,
-          count: questionCount++,
-          onSelect: (value) {
-            selectedAnswers[value.$1] = e.options[value.$2];
-            context.read<ExamProvider>().setOngoingExamAnswers(selectedAnswers);
-          },
-        );
-      },
-    ).toList();
+    if (context.watch<ExamProvider>().isExamOngoing) {
+      int questionCount = 0;
+      // * Show exam page while exam is ongoing
+      mcqQuestions = widget.questions.map(
+        (e) {
+          return McqQuestion(
+            question: e,
+            count: questionCount++,
+            onSelect: (value) {
+              selectedAnswers[value.$1] = e.options[value.$2];
+              context
+                  .read<ExamProvider>()
+                  .setOngoingExamAnswers(selectedAnswers);
+            },
+          );
+        },
+      ).toList();
+      return testTakerPageFrame(
+        context,
+        Column(
+          children: [
+            SizedBox(
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.questions.length,
+                itemBuilder: (context, i) {
+                  int index = i + 1;
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selected = index;
+                      });
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Container(
+                        margin: const EdgeInsets.all(5),
+                        width: 50,
+                        height: 40,
+                        color: selected == index
+                            ? Theme.of(context).highlightColor
+                            : Theme.of(context).indicatorColor,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              index.toString(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            mcqQuestions![selected - 1],
+          ],
+        ),
+      );
+    } else {
+      // * Show result once exam is set to over
+      for (int i = 0; i < widget.correctAnswers.length; i++) {
+        if (selectedAnswers[i] == widget.correctAnswers[i]) {
+          marks++;
+        }
+      }
+      return testTakerPageFrame(
+        context,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text(
+                'Obtained marks:',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                marks.toString(),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Scaffold testTakerPageFrame(BuildContext context, Widget child) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -70,50 +145,12 @@ class _TestTakerBodyState extends State<TestTakerBody> {
             context.go('/exam/${widget.exam.id}');
           },
         ),
-        title: Text(selected.toString()),
+        title: Text(
+          selected.toString(),
+        ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.questions.length,
-              itemBuilder: (context, i) {
-                int index = i + 1;
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      selected = index;
-                    });
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Container(
-                      margin: const EdgeInsets.all(5),
-                      width: 50,
-                      height: 40,
-                      color: selected == index
-                          ? Theme.of(context).highlightColor
-                          : Theme.of(context).indicatorColor,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            index.toString(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          mcqQuestions![selected - 1],
-        ],
-      ),
+      body: child,
     );
   }
 }

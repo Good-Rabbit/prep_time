@@ -34,7 +34,7 @@ class TestTakerShell extends StatelessWidget {
             }
             return TestTakerBody(
               questions: snapshot.data!,
-              correctAnswers: answers,
+              correctAnswers: correctAnswers,
               exam: exam,
             );
           } else {
