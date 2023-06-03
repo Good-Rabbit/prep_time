@@ -1,5 +1,6 @@
 class Course {
   const Course({
+    required this.id,
     required this.title,
     required this.description,
     required this.subjects,
@@ -7,6 +8,7 @@ class Course {
     required this.sampleExams,
     required this.published,
   });
+  final String id;
   final String title;
   final String description;
   final List<String> subjects;

@@ -9,10 +9,9 @@ import 'package:preptime/services/intl.dart';
 import 'package:provider/provider.dart';
 
 class ExamDetails extends StatefulWidget {
-  const ExamDetails({super.key, this.id = '', this.exam});
+  const ExamDetails({super.key, required this.id});
 
   final String id;
-  final Exam? exam;
 
   @override
   State<ExamDetails> createState() => _ExamDetailsState();
@@ -21,18 +20,14 @@ class ExamDetails extends StatefulWidget {
 class _ExamDetailsState extends State<ExamDetails> {
   @override
   Widget build(BuildContext context) {
-    // * Determine page entry type
-    // ** And show page accordingly
-    if (widget.id == '' && widget.exam == null) {
+    // * Blank ID check
+    if (widget.id == '') {
       return const NotFound();
-    } else if (widget.exam == null) {
-      // ID not null
+    } else {
       // Get exam by id
       Exam exam = ExamProvider.sampleExams[ExamProvider.sampleExams
           .indexWhere((element) => element.id == widget.id)];
       return ExamDetailsFragment(exam: exam);
-    } else {
-      return ExamDetailsFragment(exam: widget.exam!);
     }
   }
 }
@@ -101,11 +96,24 @@ class ExamDetailsFragment extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 15, 15),
-            child: Text(
-              getFormattedTime(exam.start),
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  getFormattedTime(exam.start),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  '${exam.duration.inMinutes.toString()} minutes',
+                  style: const TextStyle(
+                    color: Colors.orange,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +20,10 @@ class _LiveTickerState extends State<LiveTicker> {
   @override
   void initState() {
     super.initState();
-    liveTicker();
+    ticker();
   }
 
-  liveTicker() {
+  ticker() {
     Timer(const Duration(milliseconds: 999), () {
       if (mounted) {
         setState(() {
@@ -33,7 +34,7 @@ class _LiveTickerState extends State<LiveTicker> {
           if (examTill.inSeconds <= 0) {
             return;
           } else {
-              liveTicker();
+            ticker();
           }
         });
       }
@@ -50,17 +51,18 @@ class _LiveTickerState extends State<LiveTicker> {
     int minutes = examTill.inSeconds ~/ 60;
     return FilledButton.icon(
       label: SizedBox(
-          width: 40,
-          child: Text(
-              '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}')),
+        width: 40,
+        child: Text(
+          '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
+        ),
+      ),
       onPressed: () {
-        context.read<ExamProvider>().completeOngoingExam();
-        // context.go(
-        //   '/test_taker',
-        //   extra: ExamProvider.sampleExams[ExamProvider.sampleExams.indexWhere(
-        //       (element) =>
-        //           element.id == context.read<ExamProvider>().ongoingExamId)],
-        // );
+        context.go(
+          '/test_taker',
+          extra: ExamProvider.sampleExams[ExamProvider.sampleExams.indexWhere(
+              (element) =>
+                  element.id == context.read<ExamProvider>().ongoingExamId)],
+        );
       },
       style: const ButtonStyle(
           iconColor: MaterialStatePropertyAll(Colors.white),

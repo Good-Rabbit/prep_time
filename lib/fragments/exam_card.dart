@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:preptime/functions/time_formatter.dart';
 
@@ -90,27 +92,88 @@ class ExamCard extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    Text(
-                      getFormattedTime(exam.start),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                    if (exam.start.isBefore(DateTime.now()))
+                      OngoingTicker(
+                        exam: exam,
                       ),
-                    ),
+                    if (!exam.start.isBefore(DateTime.now()))
+                      Text(
+                        getFormattedTime(exam.start),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
                     const SizedBox(
                       width: 5,
                     ),
-                    Text(
-                      '${exam.duration.inMinutes.toString()} minutes',
-                      style: const TextStyle(
-                        color: Colors.orange,
+                    if (!exam.start.isBefore(DateTime.now()))
+                      Text(
+                        '${exam.duration.inMinutes.toString()} minutes',
+                        style: const TextStyle(
+                          color: Colors.orange,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class OngoingTicker extends StatefulWidget {
+  const OngoingTicker({
+    super.key,
+    required this.exam,
+  });
+
+  final Exam exam;
+
+  @override
+  State<OngoingTicker> createState() => _OngoingTickerState();
+}
+
+class _OngoingTickerState extends State<OngoingTicker> {
+  Duration examTill = Duration.zero;
+  DateTime examFrom = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    examFrom = DateTime.now().add(widget.exam.duration);
+    ticker();
+  }
+
+  ticker() {
+    Timer(const Duration(milliseconds: 999), () {
+      if (mounted) {
+        setState(() {
+          examTill = examFrom.difference(
+            DateTime.now(),
+          );
+          if (examTill.inSeconds <= 0) {
+            return;
+          } else {
+            ticker();
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    examTill = examFrom.difference(
+      DateTime.now(),
+    );
+    int seconds = examTill.inSeconds % 60;
+    int minutes = examTill.inSeconds ~/ 60;
+    return Chip(
+      label: Text(
+        '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
       ),
     );
   }

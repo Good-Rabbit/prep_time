@@ -8,15 +8,18 @@ ThemeData defaultDarkTheme = ThemeData.dark(
   useMaterial3: true,
 );
 
+Color themeColorWithAlpha = const Color.fromARGB(115, 85, 179, 255);
+
 CardTheme cardTheme =
     const CardTheme(elevation: 10, shadowColor: Colors.transparent);
 
-AppBarTheme appBarTheme =
-    const AppBarTheme(backgroundColor: Color.fromARGB(80, 120, 194, 255));
-
-NavigationBarThemeData navigationBarThemeData = const NavigationBarThemeData(
+NavigationBarThemeData navigationBarThemeData = NavigationBarThemeData(
   // backgroundColor: Color.fromARGB(80, 120, 194, 255),
-  indicatorColor: Color.fromARGB(80, 120, 194, 255),
+  indicatorColor: themeColorWithAlpha,
+);
+
+NavigationRailThemeData navigationRailThemeData = NavigationRailThemeData(
+  indicatorColor: themeColorWithAlpha,
 );
 
 ThemeData myDarkTheme = ThemeData(
@@ -25,8 +28,8 @@ ThemeData myDarkTheme = ThemeData(
   // colorSchemeSeed: const Color.fromARGB(255, 31, 141, 214),
   brightness: Brightness.dark,
   cardTheme: cardTheme,
-  appBarTheme: appBarTheme,
   navigationBarTheme: navigationBarThemeData,
+  navigationRailTheme: navigationRailThemeData,
   // fontFamily: 'NotoSerifBengali',
 );
 
@@ -34,7 +37,7 @@ ThemeData myLightTheme = ThemeData(
   useMaterial3: true,
   colorSchemeSeed: Colors.blue,
   cardTheme: cardTheme,
-  appBarTheme: appBarTheme,
   navigationBarTheme: navigationBarThemeData,
+  navigationRailTheme: navigationRailThemeData,
   // fontFamily: 'NotoSerifBengali',
 );

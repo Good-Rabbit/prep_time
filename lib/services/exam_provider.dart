@@ -268,8 +268,8 @@ class ExamProvider with ChangeNotifier {
     isExamOngoing = prefs!.getBool('examOngoing') ?? false;
     ongoingExamId = prefs!.getString('examId');
     answers = prefs!.getStringList('answers') ?? [];
-    String? till = prefs!.getString('examTill');
-    examTill = DateTime.tryParse(till!);
+    String till = prefs!.getString('examTill') ?? '';
+    examTill = DateTime.tryParse(till);
     if (examTill != null && isExamOngoing) {
       if (examTill!.isBefore(DateTime.now())) {
         completeOngoingExam();

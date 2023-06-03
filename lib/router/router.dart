@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:preptime/data/exam.dart';
+import 'package:preptime/pages/class_selector.dart';
+import 'package:preptime/pages/course_details.dart';
 import 'package:preptime/pages/exam_details.dart';
 import 'package:preptime/pages/four_o_four.dart';
 import 'package:preptime/pages/shell.dart';
@@ -30,9 +32,9 @@ final router = GoRouter(
               child: ExamDetails(id: state.pathParameters['id'] ?? '')),
         ),
         GoRoute(
-          path: '/exam',
-          pageBuilder: (context, state) =>
-              MaterialPage(child: ExamDetails(exam: state.extra as Exam)),
+          path: '/course/:id',
+          pageBuilder: (context, state) => MaterialPage(
+              child: CourseDetails(id: state.pathParameters['id'] ?? '')),
         ),
         GoRoute(
           path: '/test_taker',
@@ -41,5 +43,9 @@ final router = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+        path: '/class',
+        pageBuilder: (context, state) =>
+            const MaterialPage(child: ClassSelector())),
   ],
 );

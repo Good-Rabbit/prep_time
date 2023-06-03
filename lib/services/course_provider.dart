@@ -4,6 +4,7 @@ import 'package:preptime/data/course.dart';
 class CourseProvider with ChangeNotifier {
   static List<Course> sampleCourses = [
     Course(
+      id: '1',
       title:
           'Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 ',
       description:
@@ -14,6 +15,7 @@ class CourseProvider with ChangeNotifier {
       published: DateTime.now(),
     ),
     Course(
+      id: '2',
       title: 'Sample course title 1 ',
       description: 'Sample course description ',
       subjects: ['MATH'],
@@ -22,6 +24,7 @@ class CourseProvider with ChangeNotifier {
       published: DateTime.now(),
     ),
     Course(
+      id: '4',
       title: 'Sample course title 1 ',
       description: 'Sample course description ',
       subjects: ['ENG', 'MATH'],
@@ -30,6 +33,7 @@ class CourseProvider with ChangeNotifier {
       published: DateTime.now(),
     ),
     Course(
+      id: '4',
       title: 'Sample course title 1 ',
       description: 'Sample course description ',
       subjects: ['BNG', 'ENG', 'MATH', 'BGS', 'SCI'],

@@ -24,13 +24,8 @@ class _McqQuestionState extends State<McqQuestion> {
   String selected = '';
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // ! Handle empty error in marginal time frame
+    // ! Handle empty error for a limited time frame
     if (context.watch<ExamProvider>().answers.isEmpty) {
       // TODO show loading
       return const Text('Loading');
@@ -51,31 +46,28 @@ class _McqQuestionState extends State<McqQuestion> {
                 .titleMedium!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          ...widget.question.options.map(
-            (option) {
-              return Text(
-                option,
-                style: Theme.of(context).textTheme.bodyMedium,
-              );
-            },
-          ).toList(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: SegmentedButton<String>(
-                segments: widget.question.options
-                    .map((e) => ButtonSegment<String>(value: e, label: Text(e)))
-                    .toList(),
-                selected: {selected},
-                showSelectedIcon: false,
-                onSelectionChanged: (p0) {
-                  setState(() {
-                    selected = p0.first;
-                  });
-                  widget.onSelect((
-                    widget.count,
-                    widget.question.options.indexOf(p0.first),
-                  ));
-                }),
+            child: Column(
+              children: widget.question.options
+                  .map((e) => RadioMenuButton(
+                        value: e,
+                        groupValue: selected,
+                        onChanged: (value) => setState(
+                          () {
+                            selected = value ?? '';
+                            widget.onSelect((
+                              widget.count,
+                              widget.question.options.indexOf(value!),
+                            ));
+                          },
+                        ),
+                        child: Text(
+                          e,
+                        ),
+                      ))
+                  .toList(),
+            ),
           )
         ],
       ),

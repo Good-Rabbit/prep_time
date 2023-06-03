@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:preptime/fragments/course_card.dart';
+import 'package:preptime/fragments/course_list.dart';
 import 'package:preptime/fragments/live_exam_list.dart';
-import 'package:preptime/services/course_provider.dart';
 import 'package:preptime/services/intl.dart';
-import 'package:provider/provider.dart';
 
 class HomeDestination extends StatefulWidget {
   const HomeDestination({super.key});
@@ -36,21 +34,7 @@ class _HomeDestinationState extends State<HomeDestination> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        SizedBox(
-          height: 270,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: context
-                .watch<CourseProvider>()
-                .getCourses()
-                .map(
-                  (e) => CourseCard(
-                    course: e,
-                  ),
-                )
-                .toList(),
-          ),
-        ),
+        const CourseList(),
         const SizedBox(
           height: 10,
         ),

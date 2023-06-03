@@ -12,8 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => ExamProvider()),
       ChangeNotifierProvider(create: (_) => CourseProvider()),
+      ChangeNotifierProvider(create: (_) => ExamProvider()),
       ChangeNotifierProvider(create: (_) => SettingsProvider()),
     ],
     child: const MainApp(),

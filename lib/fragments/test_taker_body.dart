@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:preptime/data/question.dart';
 import 'package:preptime/fragments/mcq.dart';
 import 'package:preptime/services/exam_provider.dart';
+import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 import '../data/exam.dart';
@@ -73,6 +74,7 @@ class _TestTakerBodyState extends State<TestTakerBody> {
                 itemBuilder: (context, i) {
                   int index = i + 1;
                   return InkWell(
+                    borderRadius: BorderRadius.circular(10),
                     onTap: () {
                       setState(() {
                         selected = index;
@@ -85,8 +87,8 @@ class _TestTakerBodyState extends State<TestTakerBody> {
                         width: 50,
                         height: 40,
                         color: selected == index
-                            ? Theme.of(context).highlightColor
-                            : Theme.of(context).indicatorColor,
+                            ? themeColorWithAlpha
+                            : Theme.of(context).secondaryHeaderColor,
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
