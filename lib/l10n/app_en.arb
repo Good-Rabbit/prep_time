@@ -29,6 +29,8 @@
   "live": "Live",
   "liveExam": "Live Exam",
   "liveExams": "Live Exams",
+  "login": "Login",
+  "logout": "Logout",
   "newCourses": "New Courses",
   "ok": "Okay",
   "run": "Run!",

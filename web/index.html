@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -26,8 +27,13 @@
   <meta name="apple-mobile-web-app-title" content="preptime">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
+  <!-- Google sign in -->
+  <meta name="google-signin-client_id"
+    content="609123727992-6mn7c8k14ii7mv16p7tedtjdpn47hk2c.apps.googleusercontent.com" />
+  <meta name="google-signin-client_secret" content="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" />
+
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>preptime</title>
   <link rel="manifest" href="manifest.json">
@@ -39,16 +45,69 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
+
 <body>
+  <script type="module">
+
+    // Import the functions you need from the SDKs you need
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
+
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+
+    // TODO: Add SDKs for Firebase products that you want to use
+
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+
+    // Your web app's Firebase configuration
+
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyCH38zdmHoOLGop12VC2H4cg3Zj1MZBBZw",
+
+      // authDomain: "localhost",
+      authDomain: "preptime-bd.firebaseapp.com",
+
+      databaseURL: "https://preptime-bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+      projectId: "preptime-bd",
+
+      storageBucket: "preptime-bd.appspot.com",
+
+      messagingSenderId: "609123727992",
+
+      appId: "1:609123727992:web:c46ca5556a8ca2c4728b8d",
+
+      measurementId: "G-H7LQR0N3P0"
+
+    };
+
+
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+
+    const analytics = getAnalytics(app);
+
+    const auth = getAuth(app);
+
+  </script>
+
   <script>
-    window.addEventListener('load', function(ev) {
+    window.addEventListener('load', function (ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
+        onEntrypointLoaded: function (engineInitializer) {
+          engineInitializer.initializeEngine().then(function (appRunner) {
             appRunner.runApp();
           });
         }
@@ -56,4 +115,5 @@
     });
   </script>
 </body>
+
 </html>

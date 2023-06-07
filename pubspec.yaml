@@ -7,14 +7,20 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  cloud_firestore: ^4.8.0
+  firebase_auth: ^4.6.2
   firebase_core: ^2.13.0
+  firebase_database: ^10.2.2
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   go_router: ^7.0.1
+  google_sign_in: ^6.1.3
   intl: any
+  package_info_plus: ^4.0.2
   provider: ^6.0.5
+  restart_app: ^1.2.1
   shared_preferences: ^2.1.1
 
 dev_dependencies:
@@ -33,3 +39,5 @@ flutter:
   #       - asset: fonts/NotoSerifBengali-Bold.ttf
   #       - asset: fonts/NotoSerifBengali-Medium.ttf
   #       - asset: fonts/NotoSerifBengali_Condensed-ExtraBold.ttf
+  assets:
+    - assets/images/

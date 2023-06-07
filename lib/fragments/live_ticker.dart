@@ -49,7 +49,7 @@ class _LiveTickerState extends State<LiveTicker> {
     );
     int seconds = examTill.inSeconds % 60;
     int minutes = examTill.inSeconds ~/ 60;
-    return FilledButton.icon(
+    return ElevatedButton.icon(
       label: SizedBox(
         width: 40,
         child: Text(
@@ -65,9 +65,10 @@ class _LiveTickerState extends State<LiveTicker> {
         );
       },
       style: const ButtonStyle(
-          iconColor: MaterialStatePropertyAll(Colors.white),
-          foregroundColor: MaterialStatePropertyAll(Colors.white),
-          backgroundColor: MaterialStatePropertyAll(Colors.red)),
+        iconColor: MaterialStatePropertyAll(Colors.white),
+        foregroundColor: MaterialStatePropertyAll(Colors.white),
+        backgroundColor: MaterialStatePropertyAll(Colors.red),
+      ),
       icon: const Icon(
         Icons.edit_rounded,
       ),

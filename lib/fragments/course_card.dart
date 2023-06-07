@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:preptime/data/course.dart';
 import 'package:preptime/functions/time_formatter.dart';
+import 'package:preptime/theme/theme.dart';
 
 class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course});
@@ -44,6 +45,7 @@ class CourseCard extends StatelessWidget {
               Row(
                 children: [
                   Chip(
+                    side: chipBorderOnColor,
                     label: Text(
                       course.subjects[0],
                     ),
@@ -53,6 +55,7 @@ class CourseCard extends StatelessWidget {
                   ),
                   if (course.subjects.length > 1)
                     Chip(
+                      side: chipBorderOnColor,
                       label: Text(
                         course.subjects[1],
                       ),
@@ -62,6 +65,7 @@ class CourseCard extends StatelessWidget {
                   ),
                   if (course.subjects.length > 2)
                     Chip(
+                      side: chipBorderOnColor,
                       label: Text(
                         '+${(course.subjects.length - 2).toString()}',
                       ),

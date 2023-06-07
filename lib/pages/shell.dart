@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:preptime/auth/auth.dart';
 import 'package:preptime/data/menu_items_enum.dart';
 import 'package:preptime/fragments/popup_item_row.dart';
 import 'package:preptime/functions/wide_screen_determiner.dart';
 import 'package:preptime/pages/class_selector.dart';
+import 'package:preptime/pages/login.dart';
 import 'package:preptime/router/navigation_bar.dart';
 import 'package:preptime/router/navigation_rail.dart';
 import 'package:preptime/services/exam_provider.dart';
@@ -33,7 +35,7 @@ class _ShellState extends State<Shell> {
   Widget build(BuildContext context) {
     isWide = isWideScreen(context);
 
-    if (context.watch<SettingsProvider>().selectedClass == null) {
+    if (context.watch<SettingsProvider>().getSelectedClass() == null) {
       return const ClassSelector();
     }
 
@@ -54,7 +56,8 @@ class _ShellState extends State<Shell> {
                 child: PopupItemRow(
                   icon: const Icon(Icons.class_rounded),
                   label: Text(
-                      '${strings(context).classValue} - ${context.read<SettingsProvider>().selectedClass!.name}'),
+                    '${strings(context).classValue} - ${context.read<SettingsProvider>().getSelectedClass()!.name}',
+                  ),
                 ),
               ),
               PopupMenuItem(
@@ -70,17 +73,43 @@ class _ShellState extends State<Shell> {
                 value: MenuItems.themeChoice,
                 child: PopupItemRow(
                   icon: Icon(
-                    context.read<SettingsProvider>().themeMode == ThemeMode.dark
+                    context.read<SettingsProvider>().getThemeMode() ==
+                            ThemeMode.dark
                         ? Icons.light_mode_rounded
                         : Icons.dark_mode_rounded,
                   ),
                   label: Text(
-                    context.read<SettingsProvider>().themeMode == ThemeMode.dark
+                    context.read<SettingsProvider>().getThemeMode() ==
+                            ThemeMode.dark
                         ? strings(context).lightTheme
                         : strings(context).darkTheme,
                   ),
                 ),
               ),
+              if (context.read<AuthProvider>().getCurrentUser() == null)
+                PopupMenuItem(
+                  value: MenuItems.loginChoice,
+                  child: PopupItemRow(
+                    icon: const Icon(
+                      Icons.login_rounded,
+                    ),
+                    label: Text(
+                      strings(context).login,
+                    ),
+                  ),
+                ),
+              if (context.read<AuthProvider>().getCurrentUser() != null)
+                PopupMenuItem(
+                  value: MenuItems.logoutChoice,
+                  child: PopupItemRow(
+                    icon: const Icon(
+                      Icons.logout_rounded,
+                    ),
+                    label: Text(
+                      strings(context).logout,
+                    ),
+                  ),
+                ),
             ],
             onSelected: (value) => switch (value) {
               MenuItems.classChoice => context.pushReplacement('/class'),
@@ -88,9 +117,28 @@ class _ShellState extends State<Shell> {
                 context.read<SettingsProvider>().switchLocale(),
               MenuItems.themeChoice =>
                 context.read<SettingsProvider>().swithThemeMode(),
+              MenuItems.loginChoice => showDialog(
+                  context: context,
+                  builder: (context) => const AuthDialog(
+                    shouldPopAutomatically: true,
+                  ),
+                ),
+              MenuItems.logoutChoice => context.read<AuthProvider>().signOut(),
             },
-            icon: const Icon(Icons.face_2),
             iconSize: 25,
+            child: (context.watch<AuthProvider>().getCurrentUser() == null ||
+                    context.read<AuthProvider>().getUserImageUrl() == null)
+                ? Icon(context.read<AuthProvider>().getCurrentUser() == null
+                    ? Icons.face_2_rounded
+                    : Icons.face_rounded)
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      foregroundImage: NetworkImage(
+                          context.watch<AuthProvider>().getUserImageUrl() ??
+                              ''),
+                    ),
+                  ),
           ),
           const SizedBox(
             width: 10,

@@ -19,33 +19,40 @@ final router = GoRouter(
       // Build routes from destinations
       routes: [
         ...destinations
-            .map((e) => GoRoute(
-                  path: e.route,
-                  pageBuilder: (context, state) =>
-                      MaterialPage(child: e.destination),
-                  // builder: (context, state) => e.destination,
-                ))
+            .map(
+              (e) => GoRoute(
+                path: e.route,
+                pageBuilder: (context, state) =>
+                    MaterialPage(child: e.destination),
+                // builder: (context, state) => e.destination,
+              ),
+            )
             .toList(),
         GoRoute(
           path: '/exam/:id',
           pageBuilder: (context, state) => MaterialPage(
-              child: ExamDetails(id: state.pathParameters['id'] ?? '')),
+            child: ExamDetails(id: state.pathParameters['id'] ?? ''),
+          ),
         ),
         GoRoute(
           path: '/course/:id',
           pageBuilder: (context, state) => MaterialPage(
-              child: CourseDetails(id: state.pathParameters['id'] ?? '')),
+            child: CourseDetails(id: state.pathParameters['id'] ?? ''),
+          ),
         ),
         GoRoute(
           path: '/test_taker',
-          pageBuilder: (context, state) =>
-              MaterialPage(child: TestTakerShell(exam: state.extra as Exam)),
+          pageBuilder: (context, state) => MaterialPage(
+            child: TestTakerShell(exam: state.extra as Exam),
+          ),
         ),
       ],
     ),
     GoRoute(
-        path: '/class',
-        pageBuilder: (context, state) =>
-            const MaterialPage(child: ClassSelector())),
+      path: '/class',
+      pageBuilder: (context, state) => const MaterialPage(
+        child: ClassSelector(),
+      ),
+    ),
   ],
 );

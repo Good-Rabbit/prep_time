@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:preptime/data/classes.dart';
 import 'package:preptime/functions/dynamic_padding_determiner.dart';
+import 'package:preptime/services/firebase_provider.dart';
 import 'package:preptime/services/intl.dart';
 import 'package:preptime/services/settings_provider.dart';
 import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:restart_app/restart_app.dart';
 
 class ClassSelector extends StatefulWidget {
   const ClassSelector({super.key});
@@ -21,7 +22,7 @@ class _ClassSelectorState extends State<ClassSelector> {
   void initState() {
     super.initState();
     selectedClass =
-        context.read<SettingsProvider>().selectedClass ?? classes.first;
+        context.read<SettingsProvider>().getSelectedClass() ?? classes.first;
   }
 
   @override
@@ -54,12 +55,13 @@ class _ClassSelectorState extends State<ClassSelector> {
             const SizedBox(
               height: 5,
             ),
-            FilledButton.icon(
+            ElevatedButton.icon(
                 onPressed: () {
                   context
                       .read<SettingsProvider>()
                       .setSelectedClass(selectedClass);
-                  context.go('/');
+                  context.read<FbProvider>().setInstance(selectedClass);
+                  Restart.restartApp();
                 },
                 icon: const Icon(Icons.save_rounded),
                 label: const Text('Save'))

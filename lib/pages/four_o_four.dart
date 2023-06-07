@@ -14,7 +14,7 @@ class NotFound extends StatelessWidget {
           const Text(
             '404!',
           ),
-          FilledButton(
+          ElevatedButton(
             onPressed: () {
               context.go('/');
             },

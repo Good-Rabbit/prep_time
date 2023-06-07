@@ -3,51 +3,63 @@ import 'package:preptime/data/classes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
-  Locale locale = const Locale('bn');
-  ThemeMode themeMode = ThemeMode.light;
-  Classes? selectedClass;
+  Locale _locale = const Locale('bn');
+  ThemeMode _themeMode = ThemeMode.light;
+  Classes? _selectedClass;
 
   SettingsProvider() {
-    getSettings();
+    retrieveSettings();
+  }
+
+  Locale getLocale() {
+    return _locale;
+  }
+
+  ThemeMode getThemeMode() {
+    return _themeMode;
+  }
+
+  Classes? getSelectedClass() {
+    return _selectedClass;
   }
 
   setSelectedClass(Classes selectedClass) async {
-    this.selectedClass = selectedClass;
+    _selectedClass = selectedClass;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('selectedClass', selectedClass.toString());
 
     notifyListeners();
   }
 
-  getSelectedClass() async {
+  retrieveSelectedClass() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    selectedClass = Classes.fromString(prefs.getString('selectedClass') ?? '');
+    _selectedClass = Classes.fromString(prefs.getString('selectedClass') ?? '');
   }
 
-  getSettings() async {
+  retrieveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    themeMode =
+    _themeMode =
         prefs.getBool('dark') ?? false ? ThemeMode.dark : ThemeMode.light;
-    locale = Locale(prefs.getString('locale') ?? 'bn');
-    await getSelectedClass();
+    _locale = Locale(prefs.getString('locale') ?? 'bn');
+    await retrieveSelectedClass();
     notifyListeners();
   }
 
   swithThemeMode() {
-    if (themeMode == ThemeMode.dark) {
-      themeMode = ThemeMode.light;
+    if (_themeMode == ThemeMode.dark) {
+      _themeMode = ThemeMode.light;
     } else {
-      themeMode = ThemeMode.dark;
+      _themeMode = ThemeMode.dark;
     }
     saveSettings();
     notifyListeners();
   }
 
   switchLocale() {
-    if (locale == const Locale('bn')) {
-      locale = const Locale('en');
+    if (_locale == const Locale('bn')) {
+      _locale = const Locale('en');
     } else {
-      locale = const Locale('bn');
+      _locale = const Locale('bn');
     }
     saveSettings();
     notifyListeners();
@@ -55,7 +67,7 @@ class SettingsProvider with ChangeNotifier {
 
   saveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('locale', locale.toLanguageTag());
-    prefs.setBool('dark', themeMode == ThemeMode.dark);
+    prefs.setString('locale', _locale.toLanguageTag());
+    prefs.setBool('dark', _themeMode == ThemeMode.dark);
   }
 }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "609123727992",
+    "firebase_url": "https://preptime-bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "preptime-bd",
+    "storage_bucket": "preptime-bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609123727992:android:c88b6025cd7e4149728b8d",
+        "android_client_info": {
+          "package_name": "com.goodrabbit.preptime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609123727992-h7hdfn1pta8f183cq59jq2gbqgpir22h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodrabbit.preptime",
+            "certificate_hash": "92a2811a66424a8f15e883ebe00c890675f5e840"
+          }
+        },
+        {
+          "client_id": "609123727992-6mn7c8k14ii7mv16p7tedtjdpn47hk2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOGNKsH9ekTbG3K6KK5ylqLvPSVcK4khI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609123727992-6mn7c8k14ii7mv16p7tedtjdpn47hk2c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

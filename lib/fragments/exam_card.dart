@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:preptime/functions/time_formatter.dart';
+import 'package:preptime/theme/theme.dart';
 
 import '../data/exam.dart';
 
@@ -52,6 +53,7 @@ class ExamCard extends StatelessWidget {
               Row(
                 children: [
                   Chip(
+                    side: chipBorderOnColor,
                     label: Text(
                       exam.subjects[0],
                     ),
@@ -61,6 +63,7 @@ class ExamCard extends StatelessWidget {
                   ),
                   if (exam.subjects.length > 1)
                     Chip(
+                      side: chipBorderOnColor,
                       label: Text(
                         exam.subjects[1],
                       ),
@@ -70,6 +73,7 @@ class ExamCard extends StatelessWidget {
                   ),
                   if (exam.subjects.length > 2)
                     Chip(
+                      side: chipBorderOnColor,
                       label: Text(
                         '+${(exam.subjects.length - 2).toString()}',
                       ),
@@ -143,7 +147,7 @@ class _OngoingTickerState extends State<OngoingTicker> {
   @override
   void initState() {
     super.initState();
-    examFrom = DateTime.now().add(widget.exam.duration);
+    examFrom = widget.exam.start.add(widget.exam.duration);
     ticker();
   }
 
@@ -172,8 +176,12 @@ class _OngoingTickerState extends State<OngoingTicker> {
     int seconds = examTill.inSeconds % 60;
     int minutes = examTill.inSeconds ~/ 60;
     return Chip(
+      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+      backgroundColor: Colors.red,
+      side: const BorderSide(color: Colors.transparent),
       label: Text(
-        '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
+        'LIVE ${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }

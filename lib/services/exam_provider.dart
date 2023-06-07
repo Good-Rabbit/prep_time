@@ -4,7 +4,6 @@ import 'package:preptime/data/question.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExamProvider with ChangeNotifier {
-  static String time = DateTime(2023).toString();
   static List<Question> sampleQuestions = const [
     Question(
       id: "1",
