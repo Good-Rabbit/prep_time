@@ -17,10 +17,13 @@ void main() async {
   FirebaseApp app = await Firebase.initializeApp(
       options: const FirebaseOptions(
     apiKey: 'AIzaSyCH38zdmHoOLGop12VC2H4cg3Zj1MZBBZw',
-    appId: 'c46ca5556a8ca2c4728b8d',
+    appId: '1:609123727992:web:c46ca5556a8ca2c4728b8d',
     messagingSenderId: '609123727992',
-    projectId: 'preptime',
+    projectId: 'preptime-bd',
     authDomain: "preptime-bd.firebaseapp.com",
+    databaseURL:
+        "https://preptime-bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    storageBucket: "preptime-bd.appspot.com",
   ));
   runApp(MultiProvider(
     providers: [
@@ -39,6 +42,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<FbProvider>().setInstanceFromStorage();
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [

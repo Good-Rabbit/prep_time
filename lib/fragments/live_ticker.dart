@@ -56,12 +56,10 @@ class _LiveTickerState extends State<LiveTicker> {
           '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
         ),
       ),
-      onPressed: () {
+      onPressed: () async {
         context.go(
           '/test_taker',
-          extra: ExamProvider.sampleExams[ExamProvider.sampleExams.indexWhere(
-              (element) =>
-                  element.id == context.read<ExamProvider>().ongoingExamId)],
+          extra: await context.read<ExamProvider>().getExamById(context.read<ExamProvider>().ongoingExamId!),
         );
       },
       style: const ButtonStyle(

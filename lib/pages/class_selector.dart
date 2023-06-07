@@ -61,7 +61,7 @@ class _ClassSelectorState extends State<ClassSelector> {
                       .read<SettingsProvider>()
                       .setSelectedClass(selectedClass);
                   context.read<FbProvider>().setInstance(selectedClass);
-                  Restart.restartApp();
+                  Restart.restartApp(webOrigin: 'https://preptime-bd.web.app/');
                 },
                 icon: const Icon(Icons.save_rounded),
                 label: const Text('Save'))

@@ -49,7 +49,7 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/class',
+      path: '/class_selector',
       pageBuilder: (context, state) => const MaterialPage(
         child: ClassSelector(),
       ),

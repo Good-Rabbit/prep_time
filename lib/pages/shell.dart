@@ -39,6 +39,8 @@ class _ShellState extends State<Shell> {
       return const ClassSelector();
     }
 
+    Future.delayed(const Duration(seconds: 2))
+        .then((value) => context.read<ExamProvider>().retrieveExams());
     return Scaffold(
       // * Use the child provided by go_router
       appBar: AppBar(
@@ -112,7 +114,8 @@ class _ShellState extends State<Shell> {
                 ),
             ],
             onSelected: (value) => switch (value) {
-              MenuItems.classChoice => context.pushReplacement('/class'),
+              MenuItems.classChoice =>
+                context.pushReplacement('/class_selector'),
               MenuItems.localeChoice =>
                 context.read<SettingsProvider>().switchLocale(),
               MenuItems.themeChoice =>

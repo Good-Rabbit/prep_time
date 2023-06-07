@@ -103,7 +103,7 @@ class _TestTakerBodyState extends State<TestTakerBody> {
                 },
               ),
             ),
-            mcqQuestions![selected - 1],
+            mcqQuestions![(selected - 1)],
           ],
         ),
       );

@@ -34,6 +34,7 @@ class SettingsProvider with ChangeNotifier {
   retrieveSelectedClass() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _selectedClass = Classes.fromString(prefs.getString('selectedClass') ?? '');
+    notifyListeners();
   }
 
   retrieveSettings() async {

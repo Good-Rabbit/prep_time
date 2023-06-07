@@ -26,10 +26,22 @@ class _ExamDetailsState extends State<ExamDetails> {
     if (widget.id == '') {
       return const NotFound();
     } else {
-      // Get exam by id
-      Exam exam = ExamProvider.sampleExams[ExamProvider.sampleExams
-          .indexWhere((element) => element.id == widget.id)];
-      return ExamDetailsFragment(exam: exam);
+      // * Get exam by id
+      return FutureBuilder(
+        future: context.read<ExamProvider>().getExamById(widget.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return ExamDetailsFragment(exam: snapshot.data!);
+            } else {
+              return const NotFound();
+            }
+          } else {
+            // TODO loading
+            return const Placeholder();
+          }
+        },
+      );
     }
   }
 }
@@ -56,7 +68,9 @@ class ExamDetailsFragment extends StatelessWidget {
         centerTitle: true,
       ),
       body: context.watch<AuthProvider>().getCurrentUser() == null
-          ? const AuthDialog(shouldPopAutomatically: false,)
+          ? const AuthDialog(
+              shouldPopAutomatically: false,
+            )
           : ListView(
               padding: EdgeInsets.symmetric(
                   horizontal: getDynamicPadding(context), vertical: 15),
@@ -164,7 +178,7 @@ class ExamDetailsFragment extends StatelessWidget {
                             return AlertDialog(
                               title: Text(strings(context).examOngoing),
                               content: Text(
-                                  '${strings(context).examId} - ${ExamProvider.sampleExams[ExamProvider.sampleExams.indexWhere((element) => element.id == context.read<ExamProvider>().ongoingExamId)].id}'),
+                                  '${strings(context).examId} - ${exam.id}'),
                               actions: [
                                 ElevatedButton(
                                   onPressed: () {
@@ -185,13 +199,7 @@ class ExamDetailsFragment extends StatelessWidget {
                                     context.pop();
                                     context.push(
                                       '/test_taker',
-                                      extra: ExamProvider.sampleExams[
-                                          ExamProvider.sampleExams.indexWhere(
-                                              (element) =>
-                                                  element.id ==
-                                                  context
-                                                      .read<ExamProvider>()
-                                                      .ongoingExamId)],
+                                      extra: exam,
                                     );
                                   },
                                   child: Text(strings(context).run),
