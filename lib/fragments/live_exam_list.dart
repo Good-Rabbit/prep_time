@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:preptime/fragments/exam_card.dart';
 import 'package:preptime/services/exam_provider.dart';
+import 'package:preptime/services/firebase_provider.dart';
 import 'package:provider/provider.dart';
 
 class LiveExamList extends StatefulWidget {
@@ -36,7 +37,10 @@ class _LiveExamListState extends State<LiveExamList> {
   Widget build(BuildContext context) {
     if (context.watch<ExamProvider>().getExams() == null) {
       // TODO loading
-      return const Placeholder();
+      return const Padding(
+        padding: EdgeInsets.all(15.0),
+        child: CircularProgressIndicator(),
+      );
     }
     return SizedBox(
       height: 275,

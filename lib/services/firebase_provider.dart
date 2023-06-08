@@ -44,7 +44,6 @@ class FbProvider with ChangeNotifier {
     if (selectedClass != null) {
       setInstance(selectedClass);
     }
-    setDbs();
   }
 
   // * Initialize Firebase instances based on selected calss
@@ -53,14 +52,27 @@ class FbProvider with ChangeNotifier {
     switch (selectedClass.key) {
       case 1:
         // ? keep default app for 1
+        try {
+          setDbs();
+        } catch (e) {
+          log(e.toString());
+        }
         break;
       case 2:
-        appInUse = await Firebase.initializeApp(options: options[0]);
-        setDbs();
+        try {
+          appInUse = await Firebase.initializeApp(options: options[0]);
+          setDbs();
+        } catch (e) {
+          log(e.toString());
+        }
         break;
       case 3:
-        appInUse = await Firebase.initializeApp(options: options[1]);
-        setDbs();
+        try {
+          appInUse = await Firebase.initializeApp(options: options[1]);
+          setDbs();
+        } catch (e) {
+          log(e.toString());
+        }
         break;
     }
   }
