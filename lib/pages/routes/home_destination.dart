@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:preptime/fragments/course_list.dart';
-import 'package:preptime/fragments/live_exam_list.dart';
+import 'package:preptime/pages/fragments/course_list.dart';
+import 'package:preptime/pages/fragments/live_exam_list.dart';
+import 'package:preptime/pages/fragments/user_card.dart';
 import 'package:preptime/services/intl.dart';
 
 class HomeDestination extends StatefulWidget {
@@ -13,10 +14,13 @@ class HomeDestination extends StatefulWidget {
 class _HomeDestinationState extends State<HomeDestination> {
   @override
   Widget build(BuildContext context) {
-    // ! SizedBox is required to fix height with ListView
-    // ! Listview takes full height without a column
     return ListView(
       children: [
+        // * User profile
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: UserCard(),
+        ),
         // * Live exams list
         Padding(
           padding: const EdgeInsets.all(10.0),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:preptime/data/question.dart';
-import 'package:preptime/fragments/mcq.dart';
+import 'package:preptime/pages/fragments/mcq.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
 
-import '../data/exam.dart';
+import '../../data/exam.dart';
 
 class TestTakerBody extends StatefulWidget {
   const TestTakerBody({

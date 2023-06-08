@@ -93,10 +93,9 @@ class ExamProvider with ChangeNotifier {
     ),
   ];
 
-  static List<Exam>? _exams;
+  List<Exam>? _exams;
 
   bool isExamOngoing = false;
-  bool gotData = false;
   String? ongoingExamId;
   DateTime? examTill;
   List<String> answers = [];
@@ -108,12 +107,11 @@ class ExamProvider with ChangeNotifier {
     getPrefsAndCheck();
   }
 
-  retrieveExams() {
-    if (!gotData) {
+  retrieveExams() async {
+    if (examsRef == null) {
       examsRef = FbProvider.rtdb!.ref('exams');
       examsRef!.limitToLast(10).onValue.listen(
         (event) {
-          gotData = true;
           _exams = [];
           for (final exam in event.snapshot.children) {
             _exams!.add(Exam.fromDataSnapshot(exam)!);

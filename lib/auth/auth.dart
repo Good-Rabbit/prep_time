@@ -14,7 +14,7 @@ class AuthProvider with ChangeNotifier {
 
 // * Google sign in
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  String? _googleUsername;
+  String? _username;
   String? _imageUrl;
 
   User? getCurrentUser() {
@@ -33,14 +33,14 @@ class AuthProvider with ChangeNotifier {
     return _userEmail;
   }
 
-  String? getGoogleUsername() {
-    return _googleUsername;
+  String? getUsername() {
+    return _username;
   }
 
   AuthProvider() {
     _currentUser = _auth.currentUser;
     _uid = _currentUser?.uid;
-    _googleUsername = _currentUser?.displayName;
+    _username = _currentUser?.displayName;
     _userEmail = _currentUser?.email;
     _imageUrl = _currentUser?.photoURL;
   }
@@ -125,7 +125,7 @@ class AuthProvider with ChangeNotifier {
 
     if (user != null) {
       _uid = user.uid;
-      _googleUsername = user.displayName;
+      _username = user.displayName;
       _userEmail = user.email;
       _imageUrl = user.photoURL;
       _currentUser = user;
@@ -148,7 +148,7 @@ class AuthProvider with ChangeNotifier {
     prefs.setBool('auth', false);
 
     _uid = null;
-    _googleUsername = null;
+    _username = null;
     _userEmail = null;
     _imageUrl = null;
     _currentUser = null;

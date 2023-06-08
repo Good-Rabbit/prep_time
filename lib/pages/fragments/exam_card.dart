@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:preptime/functions/time_formatter.dart';
 import 'package:preptime/theme/theme.dart';
 
-import '../data/exam.dart';
+import '../../../data/exam.dart';
 
 class ExamCard extends StatelessWidget {
   const ExamCard({
@@ -110,13 +110,11 @@ class ExamCard extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    if (!exam.start.isBefore(DateTime.now()))
-                      Text(
-                        '${exam.duration.inMinutes.toString()} minutes',
-                        style: const TextStyle(
-                          color: Colors.orange,
-                        ),
-                      ),
+                    Text(
+                      '${exam.duration.inMinutes.toString()} mins',
+                      style: const TextStyle(
+                          color: Colors.orange, overflow: TextOverflow.fade),
+                    ),
                   ],
                 ),
               ),

@@ -42,7 +42,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<FbProvider>().setInstanceFromStorage();
+    context.read<FbProvider>().setInstanceFromStorage().then((value) {
+      context.read<ExamProvider>().retrieveExams();
+      context.read<CourseProvider>().retrieveCourses();
+    });
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [

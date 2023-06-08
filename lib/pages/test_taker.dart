@@ -4,7 +4,7 @@ import 'package:preptime/data/question.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../fragments/test_taker_body.dart';
+import 'fragments/test_taker_body.dart';
 
 class TestTakerShell extends StatelessWidget {
   const TestTakerShell({super.key, required this.exam});

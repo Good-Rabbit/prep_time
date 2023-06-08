@@ -37,8 +37,7 @@ class _ExamDetailsState extends State<ExamDetails> {
               return const NotFound();
             }
           } else {
-            // TODO loading
-            return const Placeholder();
+            return const Center(child: CircularProgressIndicator(),);
           }
         },
       );

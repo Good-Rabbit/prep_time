@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:preptime/pages/Destinations/board_destination.dart';
-import 'package:preptime/pages/Destinations/class_destination.dart';
-import 'package:preptime/pages/Destinations/exam_destination.dart';
+import 'package:preptime/pages/routes/board_destination.dart';
+import 'package:preptime/pages/routes/class_destination.dart';
+import 'package:preptime/pages/routes/exam_destination.dart';
 
-import '../pages/Destinations/home_destination.dart';
+import '../pages/routes/home_destination.dart';
 
 class Destination {
   const Destination(

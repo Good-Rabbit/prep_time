@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:preptime/data/classes.dart';
 import 'package:preptime/functions/dynamic_padding_determiner.dart';
-import 'package:preptime/services/firebase_provider.dart';
 import 'package:preptime/services/intl.dart';
 import 'package:preptime/services/settings_provider.dart';
 import 'package:preptime/theme/theme.dart';
@@ -60,8 +59,7 @@ class _ClassSelectorState extends State<ClassSelector> {
                   context
                       .read<SettingsProvider>()
                       .setSelectedClass(selectedClass);
-                  context.read<FbProvider>().setInstance(selectedClass);
-                  Restart.restartApp(webOrigin: 'https://preptime-bd.web.app/');
+                  Restart.restartApp(webOrigin: Uri.base.origin.toString());
                 },
                 icon: const Icon(Icons.save_rounded),
                 label: const Text('Save'))

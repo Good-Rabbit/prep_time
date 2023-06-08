@@ -22,7 +22,7 @@ class Classes {
 }
 
 List<Classes> classes = [
-  Classes(name: 'CC Admission', key: 1),
-  Classes(name: 'Some Other Admission', key: 2),
-  Classes(name: 'Die Nigga', key: 3),
+  Classes(name: 'Die Nigga', key: 1),
+  Classes(name: 'Cadet Coaching', key: 2),
+  Classes(name: 'Admission', key: 3),
 ];

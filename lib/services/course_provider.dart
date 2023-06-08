@@ -1,52 +1,38 @@
+import 'dart:developer';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:preptime/data/course.dart';
+import 'package:preptime/services/firebase_provider.dart';
 
 class CourseProvider with ChangeNotifier {
-  static List<Course> sampleCourses = [
-    Course(
-      id: '1',
-      title:
-          'Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 ',
-      description:
-          'Sample course description Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 Sample course title 1 ',
-      subjects: ['BNG', 'ENG', 'MATH'],
-      classes: 15,
-      sampleExams: 3,
-      published: DateTime.now(),
-    ),
-    Course(
-      id: '2',
-      title: 'Sample course title 1 ',
-      description: 'Sample course description ',
-      subjects: ['MATH'],
-      classes: 10,
-      sampleExams: 7,
-      published: DateTime.now(),
-    ),
-    Course(
-      id: '4',
-      title: 'Sample course title 1 ',
-      description: 'Sample course description ',
-      subjects: ['ENG', 'MATH'],
-      classes: 10,
-      sampleExams: 3,
-      published: DateTime.now(),
-    ),
-    Course(
-      id: '4',
-      title: 'Sample course title 1 ',
-      description: 'Sample course description ',
-      subjects: ['BNG', 'ENG', 'MATH', 'BGS', 'SCI'],
-      classes: 10,
-      sampleExams: 3,
-      published: DateTime.now(),
-    ),
-  ];
+  List<Course>? _courses;
+  DatabaseReference? coursesRef;
 
-  List<Course> getCourses() {
-    // TODO implement : from firestore
-    return getSampleCourses();
+  retrieveCourses() async {
+    if (coursesRef == null) {
+      coursesRef = FbProvider.rtdb!.ref('courses');
+      coursesRef!.limitToLast(10).onValue.listen(
+        (event) {
+          _courses = [];
+          for (final exam in event.snapshot.children) {
+            _courses!.add(Course.fromDataSnapshot(exam)!);
+          }
+          notifyListeners();
+        },
+      ).onError((e) {
+        log(e.toString());
+      });
+    }
   }
 
-  static List<Course> getSampleCourses() => sampleCourses;
+  List<Course>? getCourses() {
+    // TODO implement : from firestore
+    return _courses;
+  }
+
+    Future<Course?> getCourseById(String id) async {
+    final snapshot = await coursesRef!.child(id).get();
+    return Course.fromDataSnapshot(snapshot);
+  }
 }

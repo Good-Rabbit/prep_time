@@ -6,6 +6,7 @@ import 'package:preptime/functions/time_formatter.dart';
 import 'package:preptime/pages/four_o_four.dart';
 import 'package:preptime/services/course_provider.dart';
 import 'package:preptime/services/intl.dart';
+import 'package:provider/provider.dart';
 
 class CourseDetails extends StatefulWidget {
   const CourseDetails({super.key, this.id = '', this.course});
@@ -24,11 +25,21 @@ class _CourseDetailsState extends State<CourseDetails> {
     if (widget.id == '' && widget.course == null) {
       return const NotFound();
     } else {
-      // ID not null
-      // Get exam by id
-      Course course = CourseProvider.sampleCourses[CourseProvider.sampleCourses
-          .indexWhere((element) => element.id == widget.id)];
-      return CourseDetailsFragment(course: course);
+      // * Get exam by id
+      return FutureBuilder(
+        future: context.read<CourseProvider>().getCourseById(widget.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return CourseDetailsFragment(course: snapshot.data!);
+            } else {
+              return const NotFound();
+            }
+          } else {
+            return const Center(child: CircularProgressIndicator(),);
+          }
+        },
+      );
     }
   }
 }

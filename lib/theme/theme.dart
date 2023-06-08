@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 ThemeData defaultLightTheme = ThemeData.light(
@@ -8,7 +10,7 @@ ThemeData defaultDarkTheme = ThemeData.dark(
   useMaterial3: true,
 );
 
-Color themeColorWithAlpha = const Color.fromARGB(115, 85, 179, 255);
+Color themeColorWithAlpha = Color.fromARGB(169, 68, 171, 255);
 
 CardTheme cardTheme =
     const CardTheme(elevation: 10, shadowColor: Colors.transparent);
