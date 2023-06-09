@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:preptime/data/classes.dart';
 import 'package:preptime/functions/dynamic_padding_determiner.dart';
@@ -59,7 +60,8 @@ class _ClassSelectorState extends State<ClassSelector> {
                   context
                       .read<SettingsProvider>()
                       .setSelectedClass(selectedClass);
-                  Restart.restartApp(webOrigin: Uri.base.origin.toString());
+                  Restart.restartApp(
+                      webOrigin: kIsWeb ? Uri.base.origin.toString() : null);
                 },
                 icon: const Icon(Icons.save_rounded),
                 label: const Text('Save'))

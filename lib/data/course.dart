@@ -21,19 +21,19 @@ class Course {
   final DateTime published;
 
   static Course? fromDataSnapshot(DataSnapshot obj) {
-    Map<String, dynamic> values = obj.value! as Map<String, dynamic>;
+    Map<Object?, Object?> values = obj.value! as Map<Object?, Object?>;
     var parts = (values['subjects'] as String).trim().split(',');
     List<String> subjects = parts.map((e) => e).toList();
 
     try {
       Course course = Course(
         id: obj.key ?? '777',
-        title: values['title'],
-        description: values['description'],
+        title: values['title'].toString(),
+        description: values['description'].toString(),
         subjects: subjects,
-        classes: values['classes'],
-        sampleExams: values['sampleExams'],
-        published: DateTime.parse(values['published']),
+        classes: values['classes'] as int,
+        sampleExams: values['sampleExams'] as int,
+        published: DateTime.parse(values['published'].toString()),
       );
       return course;
     } catch (e) {

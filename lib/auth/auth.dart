@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -111,16 +112,46 @@ class AuthProvider with ChangeNotifier {
   Future<User?> signInWithGoogle() async {
     User? user;
 
-    // The `GoogleAuthProvider` can only be used while running on the web
-    GoogleAuthProvider authProvider = GoogleAuthProvider();
+    if (kIsWeb) {
+      // The `GoogleAuthProvider` can only be used while running on the web
+      GoogleAuthProvider authProvider = GoogleAuthProvider();
 
-    try {
-      final UserCredential userCredential =
-          await _auth.signInWithPopup(authProvider);
+      try {
+        final UserCredential userCredential =
+            await _auth.signInWithPopup(authProvider);
 
-      user = userCredential.user;
-    } catch (e) {
-      log(e.toString());
+        user = userCredential.user;
+      } catch (e) {
+        log(e.toString());
+      }
+    } else if (Platform.isAndroid) {
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        try {
+          final UserCredential userCredential =
+              await _auth.signInWithCredential(credential);
+
+          user = userCredential.user;
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'account-exists-with-different-credential') {
+            // handle the error here
+          } else if (e.code == 'invalid-credential') {
+            // handle the error here
+          }
+        } catch (e) {
+          // handle the error here
+        }
+      }
     }
 
     if (user != null) {

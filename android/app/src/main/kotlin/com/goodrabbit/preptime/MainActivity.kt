@@ -1,4 +1,4 @@
-package com.example.preptime
+package com.goodrabbit.preptime
 
 import io.flutter.embedding.android.FlutterActivity
 

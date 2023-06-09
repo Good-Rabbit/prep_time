@@ -24,7 +24,7 @@ class Exam {
   final Duration duration;
 
   static Exam? fromDataSnapshot(DataSnapshot obj) {
-    Map<String, dynamic> values = obj.value! as Map<String, dynamic>;
+    Map<Object?, Object?> values = obj.value! as Map<Object?, Object?>;
     final joints = (values['questionIds'] as String).trim().split('~');
     List<(String, String)> ids = [];
     for (var element in joints) {
@@ -39,13 +39,13 @@ class Exam {
     try {
       Exam exam = Exam(
         id: obj.key ?? '777',
-        title: values['title'],
-        description: values['description'],
+        title: values['title'].toString(),
+        description: values['description'].toString(),
         questionIds: ids,
-        start: DateTime.parse(values['start']),
+        start: DateTime.parse(values['start'].toString()),
         subjects: subjects,
         topics: topics,
-        duration: Duration(minutes: values['duration']),
+        duration: Duration(minutes: values['duration'] as int),
       );
       return exam;
     } catch (e) {

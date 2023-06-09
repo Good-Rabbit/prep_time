@@ -6,6 +6,7 @@ class Question {
     required this.correctIndex,
     required this.difficulty,
     required this.time,
+    this.topic,
   });
 
   final String id;
@@ -14,4 +15,5 @@ class Question {
   final int correctIndex;
   final int difficulty;
   final int time;
+  final String? topic;
 }

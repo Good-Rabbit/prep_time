@@ -131,8 +131,8 @@ class AuthDialogState extends State<AuthDialog> {
                           onPressed: register,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                              top: 15.0,
-                              bottom: 15.0,
+                              top: 10.0,
+                              bottom: 10.0,
                             ),
                             child: _isRegistering
                                 ? const SizedBox(
@@ -163,8 +163,8 @@ class AuthDialogState extends State<AuthDialog> {
                           onPressed: signIn,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                              top: 15.0,
-                              bottom: 15.0,
+                              top: 10.0,
+                              bottom: 10.0,
                             ),
                             child: _isSigningIn
                                 ? const SizedBox(
@@ -191,12 +191,6 @@ class AuthDialogState extends State<AuthDialog> {
                 ),
                 Row(
                   children: [
-                    const Flexible(
-                      flex: 1,
-                      child: SizedBox(
-                        width: 10,
-                      ),
-                    ),
                     Flexible(
                       flex: 1,
                       child: InkWell(
@@ -239,13 +233,13 @@ class AuthDialogState extends State<AuthDialog> {
                         },
                         child: _isProcessing
                             ? const Padding(
-                                padding: EdgeInsets.all(15.0),
+                                padding: EdgeInsets.all(10.0),
                                 child: CircularProgressIndicator(),
                               )
                             : Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(15.0),
+                                    padding: const EdgeInsets.all(10.0),
                                     child: Image.asset(
                                       context
                                                   .read<SettingsProvider>()
@@ -260,12 +254,6 @@ class AuthDialogState extends State<AuthDialog> {
                                   const Text('Login with Google'),
                                 ],
                               ),
-                      ),
-                    ),
-                    const Flexible(
-                      flex: 1,
-                      child: SizedBox(
-                        width: 10,
                       ),
                     ),
                   ],

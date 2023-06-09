@@ -31,7 +31,7 @@ class CourseProvider with ChangeNotifier {
     return _courses;
   }
 
-    Future<Course?> getCourseById(String id) async {
+  Future<Course?> getCourseById(String id) async {
     final snapshot = await coursesRef!.child(id).get();
     return Course.fromDataSnapshot(snapshot);
   }

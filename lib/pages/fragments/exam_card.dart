@@ -41,14 +41,11 @@ class ExamCard extends StatelessWidget {
                       exam.description,
                       style: const TextStyle(
                           fontWeight: FontWeight.w500, fontSize: 14),
-                      maxLines: 4,
+                      maxLines: exam.start.isBefore(DateTime.now()) ? 3 : 4,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 15,
               ),
               Row(
                 children: [
@@ -113,7 +110,8 @@ class ExamCard extends StatelessWidget {
                     Text(
                       '${exam.duration.inMinutes.toString()} mins',
                       style: const TextStyle(
-                          color: Colors.orange, overflow: TextOverflow.fade),
+                          color: Colors.orange,
+                          overflow: TextOverflow.ellipsis),
                     ),
                   ],
                 ),

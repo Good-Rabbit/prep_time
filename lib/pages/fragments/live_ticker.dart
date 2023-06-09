@@ -50,16 +50,15 @@ class _LiveTickerState extends State<LiveTicker> {
     int seconds = examTill.inSeconds % 60;
     int minutes = examTill.inSeconds ~/ 60;
     return ElevatedButton.icon(
-      label: SizedBox(
-        width: 40,
-        child: Text(
-          '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
-        ),
+      label: Text(
+        '${minutes < 10 ? "0$minutes" : minutes}:${seconds < 10 ? "0$seconds" : seconds}',
       ),
       onPressed: () async {
         context.go(
           '/test_taker',
-          extra: await context.read<ExamProvider>().getExamById(context.read<ExamProvider>().ongoingExamId!),
+          extra: await context
+              .read<ExamProvider>()
+              .getExamById(context.read<ExamProvider>().ongoingExamId!),
         );
       },
       style: const ButtonStyle(

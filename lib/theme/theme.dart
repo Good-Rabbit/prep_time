@@ -10,7 +10,7 @@ ThemeData defaultDarkTheme = ThemeData.dark(
   useMaterial3: true,
 );
 
-Color themeColorWithAlpha = Color.fromARGB(169, 68, 171, 255);
+Color themeColorWithAlpha = Color.fromARGB(141, 68, 171, 255);
 
 CardTheme cardTheme =
     const CardTheme(elevation: 10, shadowColor: Colors.transparent);

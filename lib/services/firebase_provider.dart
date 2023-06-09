@@ -34,13 +34,20 @@ class FbProvider with ChangeNotifier {
     ),
   ];
 
+  // * Flags
+  bool fbInstanciated = false;
+  bool dbInstanciated = false;
+
   FbProvider({required this.appInUse});
 
   // * Set Firestore and Realtime database instances
   Future<void> setDbs() async {
-    store = FirebaseFirestore.instanceFor(app: appInUse);
-    rtdb = FirebaseDatabase.instanceFor(app: appInUse);
-    log('dbs instanciated');
+    if (!dbInstanciated) {
+      store = FirebaseFirestore.instanceFor(app: appInUse);
+      rtdb = FirebaseDatabase.instanceFor(app: appInUse);
+      log('dbs instanciated');
+      dbInstanciated = true;
+    }
   }
 
   Future<void> setInstanceFromStorage() async {
@@ -48,38 +55,60 @@ class FbProvider with ChangeNotifier {
     Classes? selectedClass =
         Classes.fromString(prefs.getString('selectedClass') ?? '');
     if (selectedClass != null) {
-      await _setInstance(selectedClass);
+      await _setInstance(selectedClass)
+          .catchError((error, stackTrace) => log(error.toString()));
     }
   }
 
   // * Initialize Firebase instances based on selected calss
   Future<void> _setInstance(Classes selectedClass) async {
-    // TODO implement selected firebase
-    switch (selectedClass.key) {
-      case 1:
-        // ? keep default app for 1
-        try {
-          await setDbs();
-        } catch (e) {
-          log(e.toString());
-        }
-        break;
-      case 2:
-        try {
-          appInUse = await Firebase.initializeApp(name: 'cc',options: options[0]);
-          await setDbs();
-        } catch (e) {
-          log(e.toString());
-        }
-        break;
-      case 3:
-        try {
-          appInUse = await Firebase.initializeApp(name: 'admission',options: options[1]);
-          await setDbs();
-        } catch (e) {
-          log(e.toString());
-        }
-        break;
+    if (!fbInstanciated) {
+      switch (selectedClass.key) {
+        case 1:
+          // ? keep default app for 1
+          try {
+            await setDbs()
+                .catchError((error, stackTrace) => log(error.toString()));
+          } catch (e) {
+            log(e.toString());
+          }
+          break;
+        case 2:
+          try {
+            for (final app in Firebase.apps) {
+              if (app.name == 'cc') {
+                appInUse = app;
+                break;
+              }
+            }
+
+            appInUse =
+                await Firebase.initializeApp(name: 'cc', options: options[0]);
+            await setDbs()
+                .catchError((error, stackTrace) => log(error.toString()));
+          } catch (e) {
+            log(e.toString());
+          }
+          break;
+        case 3:
+          try {
+            for (final app in Firebase.apps) {
+              if (app.name == 'admission') {
+                appInUse = app;
+                break;
+              }
+            }
+            appInUse = await Firebase.initializeApp(
+                name: 'admission', options: options[1]);
+            await setDbs()
+                .catchError((error, stackTrace) => log(error.toString()));
+          } catch (e) {
+            log(e.toString());
+          }
+          break;
+      }
+      fbInstanciated = true;
+      log('firebase instanciated');
     }
   }
 }
