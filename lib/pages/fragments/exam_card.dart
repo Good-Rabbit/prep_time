@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:preptime/functions/number_translator.dart';
 import 'package:preptime/functions/time_formatter.dart';
+import 'package:preptime/services/intl.dart';
 import 'package:preptime/theme/theme.dart';
 
 import '../../../data/exam.dart';
@@ -99,7 +101,10 @@ class ExamCard extends StatelessWidget {
                       ),
                     if (!exam.start.isBefore(DateTime.now()))
                       Text(
-                        getFormattedTime(exam.start),
+                        strings(context).localeName == 'bn'
+                            ? translateEnglishNumbers(
+                                getFormattedTime(exam.start))
+                            : getFormattedTime(exam.start),
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         ),
@@ -108,9 +113,9 @@ class ExamCard extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      '${exam.duration.inMinutes.toString()} mins',
+                      '${strings(context).localeName == 'bn' ? translateEnglishNumbers(exam.duration.inMinutes.toString()) : exam.duration.inMinutes.toString()} ${strings(context).minutes}',
                       style: const TextStyle(
-                          color: Colors.orange,
+                          color: Colors.deepOrange,
                           overflow: TextOverflow.ellipsis),
                     ),
                   ],

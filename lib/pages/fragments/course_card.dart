@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:preptime/data/course.dart';
+import 'package:preptime/functions/number_translator.dart';
 import 'package:preptime/functions/time_formatter.dart';
+import 'package:preptime/services/intl.dart';
 import 'package:preptime/theme/theme.dart';
 
 class CourseCard extends StatelessWidget {
@@ -80,7 +82,10 @@ class CourseCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      getFormattedTime(course.published),
+                      strings(context).localeName == 'bn'
+                          ? translateEnglishNumbers(
+                              getFormattedTime(course.published))
+                          : getFormattedTime(course.published),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -89,7 +94,7 @@ class CourseCard extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      '${course.classes} Classes',
+                      '${strings(context).localeName == 'bn' ? translateEnglishNumbers(course.classes.toString()) : course.classes} ${strings(context).classes}',
                       style: const TextStyle(
                         color: Colors.green,
                       ),

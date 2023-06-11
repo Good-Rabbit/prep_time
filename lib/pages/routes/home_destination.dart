@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:preptime/pages/fragments/course_list.dart';
 import 'package:preptime/pages/fragments/live_exam_list.dart';
-import 'package:preptime/pages/fragments/live_ticker.dart';
 import 'package:preptime/pages/fragments/user_card.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:preptime/services/intl.dart';
-import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class HomeDestination extends StatefulWidget {
@@ -25,6 +23,7 @@ class _HomeDestinationState extends State<HomeDestination> {
           padding: EdgeInsets.all(5.0),
           child: UserCard(),
         ),
+        // * Exam status
         Padding(
           padding: const EdgeInsets.all(5),
           child: Card(
@@ -33,26 +32,19 @@ class _HomeDestinationState extends State<HomeDestination> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Ongoing Exam:',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  '${strings(context).ongoingExam}:',
+                  style: TextStyle(color: Colors.deepOrange),
                 ),
                 if (context.watch<ExamProvider>().isExamOngoing)
-                  const LiveTicker(),
+                  Chip(
+                    label: Text(
+                      'ID: ${context.watch<ExamProvider>().ongoingExamId!}',
+                    ),
+                  ),
                 if (!context.watch<ExamProvider>().isExamOngoing)
-                  ElevatedButton.icon(
-                    label: const SizedBox(
-                      width: 40,
-                      child: Text(
-                        'None',
-                      ),
-                    ),
-                    onPressed: null,
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStatePropertyAll(themeColorWithAlpha),
-                    ),
-                    icon: const Icon(
-                      Icons.edit_rounded,
+                  const Chip(
+                    label: Text(
+                      'None',
                     ),
                   ),
               ],

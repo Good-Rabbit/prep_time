@@ -1,14 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:preptime/auth/auth.dart';
-import 'package:preptime/data/menu_items_enum.dart';
 import 'package:preptime/functions/wide_screen_determiner.dart';
 import 'package:preptime/pages/fragments/default_user_image.dart';
-import 'package:preptime/pages/fragments/popup_item_row.dart';
-import 'package:preptime/pages/login.dart';
-import 'package:preptime/services/intl.dart';
 import 'package:preptime/services/settings_provider.dart';
 import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -134,97 +129,97 @@ class UserCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  PopupMenuButton<MenuItems>(
-                      itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: MenuItems.classChoice,
-                              child: PopupItemRow(
-                                icon: const Icon(Icons.class_rounded),
-                                label: Text(
-                                  '${strings(context).classValue} - ${context.read<SettingsProvider>().getSelectedClass()!.name}',
-                                ),
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: MenuItems.localeChoice,
-                              child: PopupItemRow(
-                                icon: const Icon(Icons.language_rounded),
-                                label: Text(
-                                  strings(context).language == 'বাংলা'
-                                      ? 'English'
-                                      : 'বাংলা',
-                                ),
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: MenuItems.themeChoice,
-                              child: PopupItemRow(
-                                icon: Icon(
-                                  context
-                                              .read<SettingsProvider>()
-                                              .getThemeMode() ==
-                                          ThemeMode.dark
-                                      ? Icons.light_mode_rounded
-                                      : Icons.dark_mode_rounded,
-                                ),
-                                label: Text(
-                                  context
-                                              .read<SettingsProvider>()
-                                              .getThemeMode() ==
-                                          ThemeMode.dark
-                                      ? strings(context).lightTheme
-                                      : strings(context).darkTheme,
-                                ),
-                              ),
-                            ),
-                            if (context.read<AuthProvider>().getCurrentUser() ==
-                                null)
-                              PopupMenuItem(
-                                value: MenuItems.loginChoice,
-                                child: PopupItemRow(
-                                  icon: const Icon(
-                                    Icons.login_rounded,
-                                  ),
-                                  label: Text(
-                                    strings(context).login,
-                                  ),
-                                ),
-                              ),
-                            if (context.read<AuthProvider>().getCurrentUser() !=
-                                null)
-                              PopupMenuItem(
-                                value: MenuItems.logoutChoice,
-                                child: PopupItemRow(
-                                  icon: const Icon(
-                                    Icons.logout_rounded,
-                                  ),
-                                  label: Text(
-                                    strings(context).logout,
-                                  ),
-                                ),
-                              ),
-                          ],
-                      onSelected: (value) => switch (value) {
-                            MenuItems.classChoice =>
-                              context.pushReplacement('/class_selector'),
-                            MenuItems.localeChoice =>
-                              context.read<SettingsProvider>().switchLocale(),
-                            MenuItems.themeChoice =>
-                              context.read<SettingsProvider>().swithThemeMode(),
-                            MenuItems.loginChoice => showDialog(
-                                context: context,
-                                builder: (context) => const AuthDialog(
-                                  shouldPopAutomatically: true,
-                                ),
-                              ),
-                            MenuItems.logoutChoice =>
-                              context.read<AuthProvider>().signOut(),
-                          },
-                      iconSize: 25,
-                      child: Icon(
-                        Icons.more_vert_rounded,
-                        color: Theme.of(context).iconTheme.color,
-                      )),
+                  // PopupMenuButton<MenuItems>(
+                  //     itemBuilder: (context) => [
+                  //           PopupMenuItem(
+                  //             value: MenuItems.classChoice,
+                  //             child: PopupItemRow(
+                  //               icon: const Icon(Icons.class_rounded),
+                  //               label: Text(
+                  //                 '${strings(context).classValue} - ${context.read<SettingsProvider>().getSelectedClass()!.name}',
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           PopupMenuItem(
+                  //             value: MenuItems.localeChoice,
+                  //             child: PopupItemRow(
+                  //               icon: const Icon(Icons.language_rounded),
+                  //               label: Text(
+                  //                 strings(context).language == 'বাংলা'
+                  //                     ? 'English'
+                  //                     : 'বাংলা',
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           PopupMenuItem(
+                  //             value: MenuItems.themeChoice,
+                  //             child: PopupItemRow(
+                  //               icon: Icon(
+                  //                 context
+                  //                             .read<SettingsProvider>()
+                  //                             .getThemeMode() ==
+                  //                         ThemeMode.dark
+                  //                     ? Icons.light_mode_rounded
+                  //                     : Icons.dark_mode_rounded,
+                  //               ),
+                  //               label: Text(
+                  //                 context
+                  //                             .read<SettingsProvider>()
+                  //                             .getThemeMode() ==
+                  //                         ThemeMode.dark
+                  //                     ? strings(context).lightTheme
+                  //                     : strings(context).darkTheme,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           if (context.read<AuthProvider>().getCurrentUser() ==
+                  //               null)
+                  //             PopupMenuItem(
+                  //               value: MenuItems.loginChoice,
+                  //               child: PopupItemRow(
+                  //                 icon: const Icon(
+                  //                   Icons.login_rounded,
+                  //                 ),
+                  //                 label: Text(
+                  //                   strings(context).login,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           if (context.read<AuthProvider>().getCurrentUser() !=
+                  //               null)
+                  //             PopupMenuItem(
+                  //               value: MenuItems.logoutChoice,
+                  //               child: PopupItemRow(
+                  //                 icon: const Icon(
+                  //                   Icons.logout_rounded,
+                  //                 ),
+                  //                 label: Text(
+                  //                   strings(context).logout,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //         ],
+                  //     onSelected: (value) => switch (value) {
+                  //           MenuItems.classChoice =>
+                  //             context.pushReplacement('/class_selector'),
+                  //           MenuItems.localeChoice =>
+                  //             context.read<SettingsProvider>().switchLocale(),
+                  //           MenuItems.themeChoice =>
+                  //             context.read<SettingsProvider>().swithThemeMode(),
+                  //           MenuItems.loginChoice => showDialog(
+                  //               context: context,
+                  //               builder: (context) => const AuthDialog(
+                  //                 shouldPopAutomatically: true,
+                  //               ),
+                  //             ),
+                  //           MenuItems.logoutChoice =>
+                  //             context.read<AuthProvider>().signOut(),
+                  //         },
+                  //     iconSize: 25,
+                  //     child: Icon(
+                  //       Icons.more_vert_rounded,
+                  //       color: Theme.of(context).iconTheme.color,
+                  //     )),
                 ],
               )
             ],

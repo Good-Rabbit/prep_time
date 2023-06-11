@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:preptime/auth/auth.dart';
 import 'package:preptime/data/course.dart';
 import 'package:preptime/functions/dynamic_padding_determiner.dart';
+import 'package:preptime/functions/number_translator.dart';
 import 'package:preptime/functions/time_formatter.dart';
 import 'package:preptime/functions/wide_screen_determiner.dart';
 import 'package:preptime/pages/four_o_four.dart';
@@ -83,14 +84,16 @@ class CourseDetailsFragment extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.symmetric(
             horizontal: getDynamicPadding(context), vertical: 10),
-        child: Row(
-          children: [
-            Expanded(child: CourseDetailsMainColumn(course: course)),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.3,
-              child: CourseDetailsSecondaryColumn(course: course),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Row(
+            children: [
+              Expanded(child: CourseDetailsMainColumn(course: course)),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: CourseDetailsSecondaryColumn(course: course),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -108,7 +111,7 @@ class CourseDetailsSecondaryColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
         // Text(
         //   'Subjects',
@@ -170,73 +173,56 @@ class CourseDetailsMainColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.symmetric(
-          horizontal: getDynamicPadding(context), vertical: 15),
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-          child: Text(
-            course.title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-          child: Text(
-            course.description,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-          child: SizedBox(
-            height: 50,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: course.subjects
-                    .map(
-                      (e) => Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Chip(
-                          label: Text(
-                            e,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Text(
+              course.title,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 15, 15),
-          child: Row(
-            children: [
-              Text(
-                getFormattedTime(course.published),
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                '${course.classes} Classes',
-                style: const TextStyle(
-                  color: Colors.green,
-                ),
-              )
-            ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+            child: Text(
+              course.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 30,
-        ),
-      ],
+          if (!isWideScreen(context))
+            CourseDetailsSecondaryColumn(course: course),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 15, 15),
+            child: Row(
+              children: [
+                Text(
+                  strings(context).localeName == 'bn'
+                      ? translateEnglishNumbers(
+                          getFormattedTime(course.published))
+                      : getFormattedTime(course.published),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  '${strings(context).localeName == 'bn' ? translateEnglishNumbers(course.classes.toString()) : course.classes} ${strings(context).classes}',
+                  style: const TextStyle(
+                    color: Colors.green,
+                  ),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
     );
   }
 }

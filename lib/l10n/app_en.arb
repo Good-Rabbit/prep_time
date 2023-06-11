@@ -17,6 +17,7 @@
   "board": "Board",
   "changeClass": "Change Class",
   "classValue": "Class",
+  "classes": "Classes",
   "course": "Course",
   "courses": "Courses",
   "darkTheme": "Dark Theme",
@@ -31,8 +32,10 @@
   "liveExams": "Live Exams",
   "login": "Login",
   "logout": "Logout",
+  "minutes": "minutes",
   "newCourses": "New Courses",
   "ok": "Okay",
+  "ongoingExam": "Ongoing Exam",
   "run": "Run!",
   "takeTest": "Take test"
 }

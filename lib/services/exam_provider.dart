@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:preptime/data/classes.dart';
 import 'package:preptime/data/exam.dart';
 import 'package:preptime/data/question.dart';
 import 'package:preptime/services/firebase_provider.dart';
@@ -99,6 +100,7 @@ class ExamProvider with ChangeNotifier {
 
   bool isExamOngoing = false;
   String? ongoingExamId;
+  Classes? _selectedClass;
   DateTime? examTill;
   List<String> answers = [];
   SharedPreferences? prefs;
@@ -133,16 +135,18 @@ class ExamProvider with ChangeNotifier {
 
   getPrefsAndCheck() async {
     prefs = await SharedPreferences.getInstance();
+    _selectedClass =
+        Classes.fromString(prefs!.getString('selectedClass') ?? '');
     retrieveAndCheckExamStatus();
   }
 
   setOngoingExamAnswers(List<String> answers) async {
-    prefs!.setStringList('answers', answers);
+    prefs!.setStringList('answers${_selectedClass!.key}', answers);
     this.answers = answers;
   }
 
   resetOngoingExamAnswers() async {
-    prefs!.remove('answers');
+    prefs!.remove('answers${_selectedClass!.key}');
     answers = [];
   }
 
@@ -168,17 +172,18 @@ class ExamProvider with ChangeNotifier {
   storeExamStatus() async {
     // * Store exam status to storage
 
-    prefs!.setBool('examOngoing', isExamOngoing);
-    prefs!.setString('examId', ongoingExamId ?? '');
-    prefs!.setString('examTill', examTill.toString());
+    prefs!.setBool('examOngoing${_selectedClass!.key}', isExamOngoing);
+    prefs!.setString('examId${_selectedClass!.key}', ongoingExamId ?? '');
+    prefs!.setString('examTill${_selectedClass!.key}', examTill.toString());
   }
 
   retrieveAndCheckExamStatus() async {
     // * Get exam status from storage
-    isExamOngoing = prefs!.getBool('examOngoing') ?? false;
-    ongoingExamId = prefs!.getString('examId');
-    answers = prefs!.getStringList('answers') ?? [];
-    String till = prefs!.getString('examTill') ?? '';
+    isExamOngoing =
+        prefs!.getBool('examOngoing${_selectedClass!.key}') ?? false;
+    ongoingExamId = prefs!.getString('examId${_selectedClass!.key}');
+    answers = prefs!.getStringList('answers${_selectedClass!.key}') ?? [];
+    String till = prefs!.getString('examTill${_selectedClass!.key}') ?? '';
     examTill = DateTime.tryParse(till);
     if (examTill != null && isExamOngoing) {
       if (examTill!.isBefore(DateTime.now())) {

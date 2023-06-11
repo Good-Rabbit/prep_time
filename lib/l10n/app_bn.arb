@@ -4,6 +4,7 @@
   "board": "বোর্ড",
   "changeClass": "ক্লাস পরিবর্তন করুন",
   "classValue": "ক্লাস",
+  "classes": "টি ক্লাস",
   "course": "কোর্স",
   "courses": "কোর্সেস",
   "darkTheme": "অন্ধকার থিম",
@@ -18,8 +19,10 @@
   "liveExams": "লাইভ পরীক্ষাসমূহ",
   "login": "লগইন",
   "logout": "লগআউট",
+  "minutes": "মিনিট",
   "newCourses": "নতুন কোর্সসমূহ",
   "ok": "থিক আছে",
+  "ongoingExam": "চলতি পরীক্ষা",
   "run": "দৌড়!",
   "takeTest": "পরীক্ষা দিন"
 }
