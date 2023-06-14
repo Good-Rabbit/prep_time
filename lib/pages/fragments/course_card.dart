@@ -42,7 +42,7 @@ class CourseCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 15,
+                height: 10,
               ),
               Row(
                 children: [

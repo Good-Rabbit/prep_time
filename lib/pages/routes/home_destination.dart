@@ -33,12 +33,12 @@ class _HomeDestinationState extends State<HomeDestination> {
               children: [
                 Text(
                   '${strings(context).ongoingExam}:',
-                  style: TextStyle(color: Colors.deepOrange),
+                  style: const TextStyle(color: Colors.deepOrange),
                 ),
                 if (context.watch<ExamProvider>().isExamOngoing)
                   Chip(
                     label: Text(
-                      'ID: ${context.watch<ExamProvider>().ongoingExamId!}',
+                      'ID: ${context.watch<ExamProvider>().ongoingExam!.id}',
                     ),
                   ),
                 if (!context.watch<ExamProvider>().isExamOngoing)

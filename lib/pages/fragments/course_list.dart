@@ -36,7 +36,6 @@ class _CourseListState extends State<CourseList> {
   @override
   Widget build(BuildContext context) {
     if (context.watch<CourseProvider>().getCourses() == null) {
-      // TODO loading
       return SizedBox(
         height: 275,
         child: ListView.builder(

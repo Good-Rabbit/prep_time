@@ -18,33 +18,22 @@ class TestTakerShell extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data != null) {
-            List<String> correctAnswers = [];
-
             // TODO implement encryption
             for (Question question in snapshot.data!) {
-              correctAnswers.add(question.options[question.correctIndex]);
-            }
-            List<String> answers = [];
-            if (context.read<ExamProvider>().answers.isEmpty) {
-              for (var _ in snapshot.data!) {
-                answers.add('');
-              }
-            } else {
-              answers = context.read<ExamProvider>().answers;
+              context.read<ExamProvider>().correctAnswers.add(question.correctIndex);
             }
             return TestTakerBody(
               questions: snapshot.data!,
-              correctAnswers: correctAnswers,
               exam: exam,
             );
           } else {
             return const Scaffold(
-              body: Text('No data'),
+              body: Text('No questions! There is a problem.'),
             );
           }
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Text('Loading'),
+            body: CircularProgressIndicator(),
           );
         } else {
           return const Scaffold(

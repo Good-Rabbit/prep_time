@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:preptime/auth/auth.dart';
@@ -29,37 +31,53 @@ class _ExamDetailsState extends State<ExamDetails> {
       return const NotFound();
     } else {
       // * Get exam by id
-      return context.watch<AuthProvider>().getCurrentUser() == null
-          ? const AuthDialog(
-              shouldPopAutomatically: false,
-            )
-          : FutureBuilder(
-              future: context.read<ExamProvider>().getExamById(widget.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    return ExamDetailsFragment(exam: snapshot.data!);
-                  } else {
-                    return const NotFound();
-                  }
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
+      return FutureBuilder(
+        future: context.read<ExamProvider>().getExamById(widget.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return ExamDetailsFragment(exam: snapshot.data!);
+            } else {
+              return const NotFound();
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
+          }
+        },
+      );
     }
   }
 }
 
-class ExamDetailsFragment extends StatelessWidget {
+class ExamDetailsFragment extends StatefulWidget {
   const ExamDetailsFragment({
     super.key,
     required this.exam,
   });
 
   final Exam exam;
+
+  @override
+  State<ExamDetailsFragment> createState() => _ExamDetailsFragmentState();
+}
+
+class _ExamDetailsFragmentState extends State<ExamDetailsFragment> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  ticker() {
+    Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          ticker();
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +89,14 @@ class ExamDetailsFragment extends StatelessWidget {
             context.go('/');
           },
         ),
-        title: Text('${strings(context).liveExam} - ${exam.id}'),
+        title: Text('${strings(context).liveExam} - ${widget.exam.id}'),
         centerTitle: true,
       ),
-      body: responsiveExamDetailsPage(context),
+      body: context.watch<AuthProvider>().getCurrentUser() == null
+          ? const AuthDialog(
+              shouldPopAutomatically: false,
+            )
+          : responsiveExamDetailsPage(context),
     );
   }
 
@@ -86,17 +108,18 @@ class ExamDetailsFragment extends StatelessWidget {
         child: SingleChildScrollView(
           child: Row(
             children: [
-              Expanded(child: ExamDetailsMainColumn(exam: exam)),
+              Expanded(child: ExamDetailsMainColumn(exam: widget.exam)),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.3,
-                child: ExamDetailsSecondaryColumn(exam: exam),
+                child: ExamDetailsSecondaryColumn(exam: widget.exam),
               ),
             ],
           ),
         ),
       );
     }
-    return ExamDetailsMainColumn(exam: exam);
+    return SingleChildScrollView(
+        child: ExamDetailsMainColumn(exam: widget.exam));
   }
 }
 
@@ -222,7 +245,13 @@ class ExamDetailsMainColumn extends StatelessWidget {
           // * Match examId
           // * For ongoing exam case with same examId + normal case
           if (!(context.watch<ExamProvider>().isExamOngoing &&
-              context.read<ExamProvider>().ongoingExamId != exam.id))
+                  context.read<ExamProvider>().ongoingExam!.id != exam.id) &&
+              context
+                  .watch<ExamProvider>()
+                  .ongoingExam!
+                  .start
+                  .add(context.watch<ExamProvider>().ongoingExam!.duration)
+                  .isAfter(DateTime.now()))
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 0),
               child: ElevatedButton.icon(
@@ -241,7 +270,7 @@ class ExamDetailsMainColumn extends StatelessWidget {
           // * Match examId
           // * For ongoing exam case with different examId
           if (context.watch<ExamProvider>().isExamOngoing &&
-              context.read<ExamProvider>().ongoingExamId != exam.id)
+              context.read<ExamProvider>().ongoingExam!.id != exam.id)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 0),
               child: ElevatedButton.icon(

@@ -30,26 +30,22 @@ class _CourseDetailsState extends State<CourseDetails> {
       return const NotFound();
     } else {
       // * Get exam by id
-      return context.watch<AuthProvider>().getCurrentUser() == null
-          ? const AuthDialog(
-              shouldPopAutomatically: false,
-            )
-          : FutureBuilder(
-              future: context.read<CourseProvider>().getCourseById(widget.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    return CourseDetailsFragment(course: snapshot.data!);
-                  } else {
-                    return const NotFound();
-                  }
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
+      return FutureBuilder(
+        future: context.read<CourseProvider>().getCourseById(widget.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return CourseDetailsFragment(course: snapshot.data!);
+            } else {
+              return const NotFound();
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
+          }
+        },
+      );
     }
   }
 }
@@ -75,7 +71,11 @@ class CourseDetailsFragment extends StatelessWidget {
         title: Text('${strings(context).course} - ${course.id}'),
         centerTitle: true,
       ),
-      body: responsiveCourseDetailsPage(context),
+      body: context.watch<AuthProvider>().getCurrentUser() == null
+          ? const AuthDialog(
+              shouldPopAutomatically: false,
+            )
+          : responsiveCourseDetailsPage(context),
     );
   }
 
@@ -97,7 +97,8 @@ class CourseDetailsFragment extends StatelessWidget {
         ),
       );
     }
-    return CourseDetailsMainColumn(course: course);
+    return SingleChildScrollView(
+        child: CourseDetailsMainColumn(course: course));
   }
 }
 

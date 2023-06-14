@@ -12,12 +12,10 @@ class TestTakerBody extends StatefulWidget {
   const TestTakerBody({
     super.key,
     required this.questions,
-    required this.correctAnswers,
     required this.exam,
   });
 
   final List<Question> questions;
-  final List<String> correctAnswers;
   final Exam exam;
 
   @override
@@ -26,7 +24,7 @@ class TestTakerBody extends StatefulWidget {
 
 class _TestTakerBodyState extends State<TestTakerBody> {
   List<McqQuestion>? mcqQuestions;
-  List<String> selectedAnswers = [];
+  List<int> selectedAnswers = [];
   int selected = 1;
   int marks = 0;
 
@@ -35,7 +33,7 @@ class _TestTakerBodyState extends State<TestTakerBody> {
     super.initState();
     // * Initialize with empty answers
     for (var _ in widget.questions) {
-      selectedAnswers.add('');
+      selectedAnswers.add(100);
     }
 
     if (context.read<ExamProvider>().answers.isEmpty) {
@@ -45,100 +43,84 @@ class _TestTakerBodyState extends State<TestTakerBody> {
 
   @override
   Widget build(BuildContext context) {
-    if (context.watch<ExamProvider>().isExamOngoing) {
-      int questionCount = 0;
-      // * Show exam page while exam is ongoing
-      mcqQuestions = widget.questions.map(
-        (e) {
-          return McqQuestion(
-            question: e,
-            count: questionCount++,
-            onSelect: (value) {
-              selectedAnswers[value.$1] = e.options[value.$2];
-              context
-                  .read<ExamProvider>()
-                  .setOngoingExamAnswers(selectedAnswers);
-            },
-          );
-        },
-      ).toList();
-      return testTakerPageFrame(
-        context,
-        Column(
-          children: [
-            SizedBox(
-              height: 50,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.questions.length,
-                itemBuilder: (context, i) {
-                  int index = i + 1;
-                  return InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {
-                      setState(() {
-                        selected = index;
-                      });
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        margin: const EdgeInsets.all(5),
-                        width: 50,
-                        height: 40,
-                        color: selected == index
-                            ? themeColorWithAlpha
-                            : Theme.of(context).secondaryHeaderColor,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              index.toString(),
-                            ),
+    int questionCount = 0;
+    // * Show exam page while exam is ongoing
+    mcqQuestions = [];
+    for (var i = 0; i < widget.questions.length; i++) {
+      mcqQuestions!.add(
+        McqQuestion(
+          question: widget.questions[i],
+          complete: context.watch<ExamProvider>().isExamOngoing ? false : true,
+          selected: context.watch<ExamProvider>().isExamOngoing
+              ? null
+              : selectedAnswers[i],
+          count: questionCount++,
+          onSelect: (value) {
+            selectedAnswers[value.$1] = value.$2;
+            context.read<ExamProvider>().setOngoingExamAnswers(selectedAnswers);
+          },
+        ),
+      );
+    }
+    return testTakerPageFrame(
+      context,
+      Column(
+        children: [
+          SizedBox(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.questions.length,
+              itemBuilder: (context, i) {
+                int index = i + 1;
+                return InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () {
+                    setState(() {
+                      selected = index;
+                    });
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Container(
+                      margin: const EdgeInsets.all(5),
+                      width: 50,
+                      height: 40,
+                      color: selected == index
+                          ? themeColorWithAlpha
+                          : Theme.of(context).secondaryHeaderColor,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            index.toString(),
                           ),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            mcqQuestions![(selected - 1)],
-          ],
-        ),
-      );
-    } else {
-      // * Show result once exam is set to over
-      for (int i = 0; i < widget.correctAnswers.length; i++) {
-        if (selectedAnswers[i] == widget.correctAnswers[i]) {
-          marks++;
-        }
-      }
-      return testTakerPageFrame(
-        context,
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text(
-                'Obtained marks:',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                marks.toString(),
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ],
           ),
-        ),
-      );
-    }
+          mcqQuestions![(selected - 1)],
+        ],
+      ),
+    );
   }
 
   Scaffold testTakerPageFrame(BuildContext context, Widget child) {
+    if (!context.read<ExamProvider>().isExamOngoing) {
+      marks = 0;
+      for (int i = 0;
+          i < context.read<ExamProvider>().correctAnswers.length;
+          i++) {
+        if (selectedAnswers[i] ==
+            context.read<ExamProvider>().correctAnswers[i]) {
+          marks++;
+        }
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -148,7 +130,9 @@ class _TestTakerBodyState extends State<TestTakerBody> {
           },
         ),
         title: Text(
-          selected.toString(),
+          context.watch<ExamProvider>().isExamOngoing
+              ? selected.toString()
+              : 'You got: $marks',
         ),
         centerTitle: true,
       ),

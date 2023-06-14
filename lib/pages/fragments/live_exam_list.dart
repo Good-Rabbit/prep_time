@@ -35,7 +35,7 @@ class _LiveExamListState extends State<LiveExamList> {
 
   @override
   Widget build(BuildContext context) {
-    if (context.watch<ExamProvider>().getExams() == null) {
+    if (context.watch<ExamProvider>().exams == null) {
       // TODO loading
       return SizedBox(
         height: 275,
@@ -53,7 +53,7 @@ class _LiveExamListState extends State<LiveExamList> {
       height: 275,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: context.read<ExamProvider>().getExams()!.map((e) {
+        children: context.watch<ExamProvider>().exams!.map((e) {
           if (DateTime.now().isAfter(e.start.add(e.duration))) {
             return const SizedBox();
           }

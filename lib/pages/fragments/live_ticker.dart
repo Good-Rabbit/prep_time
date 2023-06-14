@@ -58,7 +58,7 @@ class _LiveTickerState extends State<LiveTicker> {
           '/test_taker',
           extra: await context
               .read<ExamProvider>()
-              .getExamById(context.read<ExamProvider>().ongoingExamId!),
+              .getExamById(context.read<ExamProvider>().ongoingExam!.id),
         );
       },
       style: const ButtonStyle(

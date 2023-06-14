@@ -10,7 +10,7 @@ class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _currentUser;
 
-  String? _uid;
+  static String? _uid;
   String? _userEmail;
 
 // * Google sign in
@@ -26,7 +26,7 @@ class AuthProvider with ChangeNotifier {
     return _imageUrl;
   }
 
-  String? getUid() {
+  static String? getUid() {
     return _uid;
   }
 

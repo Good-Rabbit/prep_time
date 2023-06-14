@@ -8,12 +8,16 @@ class McqQuestion extends StatefulWidget {
   final Question question;
   final int count;
   final ValueChanged<(int, int)> onSelect;
+  final bool complete;
+  final int? selected;
 
   const McqQuestion({
     super.key,
     required this.question,
     required this.count,
     required this.onSelect,
+    required this.complete,
+    required this.selected,
   });
 
   @override
@@ -21,16 +25,17 @@ class McqQuestion extends StatefulWidget {
 }
 
 class _McqQuestionState extends State<McqQuestion> {
-  String selected = '';
+  int selected = 100;
 
   @override
   Widget build(BuildContext context) {
     // ! Handle empty error for a limited time frame
-    if (context.watch<ExamProvider>().answers.isEmpty) {
-      // TODO show loading
-      return const Text('Loading');
+    if (context.watch<ExamProvider>().answers.isEmpty &&
+        widget.selected == null) {
+      return const CircularProgressIndicator();
+    } else if (context.read<ExamProvider>().answers.isNotEmpty) {
+      selected = context.watch<ExamProvider>().answers[widget.count];
     }
-    selected = context.watch<ExamProvider>().answers[widget.count];
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -40,7 +45,7 @@ class _McqQuestionState extends State<McqQuestion> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.question.content,
+            widget.question.question,
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
@@ -49,24 +54,71 @@ class _McqQuestionState extends State<McqQuestion> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Column(
-              children: widget.question.options
-                  .map((e) => RadioMenuButton(
-                        value: e,
-                        groupValue: selected,
-                        onChanged: (value) => setState(
-                          () {
-                            selected = value ?? '';
-                            widget.onSelect((
-                              widget.count,
-                              widget.question.options.indexOf(value!),
-                            ));
-                          },
+              children: widget.question.options.map((op) {
+                int e = widget.question.options.indexOf(op);
+                if (widget.complete) {
+                  bool isSelected = e == widget.selected;
+                  bool isCorrect = e == widget.question.correctIndex;
+                  Color? tileColor;
+                  if (isCorrect) {
+                    tileColor = Colors.green;
+                  } else if (isSelected) {
+                    tileColor = Colors.red;
+                  }
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: RadioMenuButton(
+                      style: ButtonStyle(
+                        iconColor: MaterialStatePropertyAll(
+                          isSelected || isCorrect ? Colors.white : null,
                         ),
-                        child: Text(
-                          e,
+                        textStyle: MaterialStatePropertyAll(
+                          TextStyle(
+                            color:
+                                isSelected || isCorrect ? Colors.white : null,
+                          ),
                         ),
-                      ))
-                  .toList(),
+                        backgroundColor: MaterialStatePropertyAll(tileColor),
+                      ),
+                      value: e,
+                      groupValue: widget.selected ?? selected,
+                      onChanged: widget.selected == null
+                          ? (_) {}
+                          : (value) => setState(
+                                () {
+                                  selected = value as int;
+                                  widget.onSelect((
+                                    widget.count,
+                                    value,
+                                  ));
+                                },
+                              ),
+                      child: Text(
+                        widget.question.options[e],
+                      ),
+                    ),
+                  );
+                } else {
+                  return ListTile(
+                    title: RadioMenuButton(
+                      value: e,
+                      groupValue: selected,
+                      onChanged: (value) => setState(
+                        () {
+                          selected = value ?? 100;
+                          widget.onSelect((
+                            widget.count,
+                            value!,
+                          ));
+                        },
+                      ),
+                      child: Text(
+                        widget.question.options[e],
+                      ),
+                    ),
+                  );
+                }
+              }).toList(),
             ),
           )
         ],

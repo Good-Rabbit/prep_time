@@ -41,109 +41,101 @@ class _ShellState extends State<Shell> {
     return Scaffold(
       // * Use the child provided by go_router
       appBar: AppBar(
-              toolbarHeight: 60,
-              title: Text(strings(context).appname),
-              leading: const Icon(Icons.bookmark),
-              actions: [
-                if (context.watch<ExamProvider>().isExamOngoing)
-                  const LiveTicker(),
-                PopupMenuButton<MenuItems>(
-                    itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: MenuItems.classChoice,
-                            child: PopupItemRow(
-                              icon: const Icon(Icons.class_rounded),
-                              label: Text(
-                                '${strings(context).classValue} - ${context.read<SettingsProvider>().getSelectedClass()!.name}',
-                              ),
-                            ),
+        toolbarHeight: 60,
+        title: Text(strings(context).appname),
+        leading: const Icon(Icons.bookmark),
+        actions: [
+          if (context.watch<ExamProvider>().isExamOngoing) const LiveTicker(),
+          PopupMenuButton<MenuItems>(
+              itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: MenuItems.classChoice,
+                      child: PopupItemRow(
+                        icon: const Icon(Icons.class_rounded),
+                        label: Text(
+                          '${strings(context).classValue} - ${context.read<SettingsProvider>().getSelectedClass()!.name}',
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: MenuItems.localeChoice,
+                      child: PopupItemRow(
+                        icon: const Icon(Icons.language_rounded),
+                        label: Text(
+                          strings(context).language == 'বাংলা'
+                              ? 'English'
+                              : 'বাংলা',
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: MenuItems.themeChoice,
+                      child: PopupItemRow(
+                        icon: Icon(
+                          context.read<SettingsProvider>().getThemeMode() ==
+                                  ThemeMode.dark
+                              ? Icons.light_mode_rounded
+                              : Icons.dark_mode_rounded,
+                        ),
+                        label: Text(
+                          context.read<SettingsProvider>().getThemeMode() ==
+                                  ThemeMode.dark
+                              ? strings(context).lightTheme
+                              : strings(context).darkTheme,
+                        ),
+                      ),
+                    ),
+                    if (context.read<AuthProvider>().getCurrentUser() == null)
+                      PopupMenuItem(
+                        value: MenuItems.loginChoice,
+                        child: PopupItemRow(
+                          icon: const Icon(
+                            Icons.login_rounded,
                           ),
-                          PopupMenuItem(
-                            value: MenuItems.localeChoice,
-                            child: PopupItemRow(
-                              icon: const Icon(Icons.language_rounded),
-                              label: Text(
-                                strings(context).language == 'বাংলা'
-                                    ? 'English'
-                                    : 'বাংলা',
-                              ),
-                            ),
+                          label: Text(
+                            strings(context).login,
                           ),
-                          PopupMenuItem(
-                            value: MenuItems.themeChoice,
-                            child: PopupItemRow(
-                              icon: Icon(
-                                context
-                                            .read<SettingsProvider>()
-                                            .getThemeMode() ==
-                                        ThemeMode.dark
-                                    ? Icons.light_mode_rounded
-                                    : Icons.dark_mode_rounded,
-                              ),
-                              label: Text(
-                                context
-                                            .read<SettingsProvider>()
-                                            .getThemeMode() ==
-                                        ThemeMode.dark
-                                    ? strings(context).lightTheme
-                                    : strings(context).darkTheme,
-                              ),
-                            ),
+                        ),
+                      ),
+                    if (context.read<AuthProvider>().getCurrentUser() != null)
+                      PopupMenuItem(
+                        value: MenuItems.logoutChoice,
+                        child: PopupItemRow(
+                          icon: const Icon(
+                            Icons.logout_rounded,
                           ),
-                          if (context.read<AuthProvider>().getCurrentUser() ==
-                              null)
-                            PopupMenuItem(
-                              value: MenuItems.loginChoice,
-                              child: PopupItemRow(
-                                icon: const Icon(
-                                  Icons.login_rounded,
-                                ),
-                                label: Text(
-                                  strings(context).login,
-                                ),
-                              ),
-                            ),
-                          if (context.read<AuthProvider>().getCurrentUser() !=
-                              null)
-                            PopupMenuItem(
-                              value: MenuItems.logoutChoice,
-                              child: PopupItemRow(
-                                icon: const Icon(
-                                  Icons.logout_rounded,
-                                ),
-                                label: Text(
-                                  strings(context).logout,
-                                ),
-                              ),
-                            ),
-                        ],
-                    onSelected: (value) => switch (value) {
-                          MenuItems.classChoice =>
-                            context.pushReplacement('/class_selector'),
-                          MenuItems.localeChoice =>
-                            context.read<SettingsProvider>().switchLocale(),
-                          MenuItems.themeChoice =>
-                            context.read<SettingsProvider>().swithThemeMode(),
-                          MenuItems.loginChoice => showDialog(
-                              context: context,
-                              builder: (context) => const AuthDialog(
-                                shouldPopAutomatically: true,
-                              ),
-                            ),
-                          MenuItems.logoutChoice =>
-                            context.read<AuthProvider>().signOut(),
-                        },
-                    iconSize: 25,
-                    child: Icon(
-                      Icons.more_vert_rounded,
-                      color: Theme.of(context).iconTheme.color,
-                    )),
-                const SizedBox(
-                  width: 10,
-                )
-              ],
-         
-            ),
+                          label: Text(
+                            strings(context).logout,
+                          ),
+                        ),
+                      ),
+                  ],
+              onSelected: (value) => switch (value) {
+                    MenuItems.classChoice =>
+                      context.pushReplacement('/class_selector'),
+                    MenuItems.localeChoice =>
+                      context.read<SettingsProvider>().switchLocale(),
+                    MenuItems.themeChoice =>
+                      context.read<SettingsProvider>().swithThemeMode(),
+                    MenuItems.loginChoice => showDialog(
+                        context: context,
+                        builder: (context) => const AuthDialog(
+                          shouldPopAutomatically: true,
+                        ),
+                      ),
+                    MenuItems.logoutChoice =>
+                      context.read<AuthProvider>().signOut(),
+                  },
+              iconSize: 25,
+              child: Icon(
+                Icons.more_vert_rounded,
+                color: Theme.of(context).iconTheme.color,
+              )),
+          const SizedBox(
+            width: 10,
+          )
+        ],
+      ),
       body: Row(
         children: [
           // Build Navigation Rail for wide screens

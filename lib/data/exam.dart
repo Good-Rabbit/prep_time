@@ -8,9 +8,9 @@ class Exam {
     required this.title,
     required this.description,
     required this.questionIds,
-    required this.start,
     required this.subjects,
     required this.topics,
+    required this.start,
     required this.duration,
   });
 
@@ -52,5 +52,54 @@ class Exam {
       log(e.toString());
       return null;
     }
+  }
+
+  @override
+  String toString() {
+    String quids = '';
+    for (var e in questionIds) {
+      quids += '${e.$1},${e.$2}~';
+    }
+      quids = quids.substring(0, (quids.length-1));
+    String subs = '';
+    for (var e in subjects) {
+      subs += '$e,';
+    }
+      subs = subs.substring(0, (subs.length-1));
+    String tops = '';
+    for (var e in topics) {
+      tops += '$e,';
+    }
+      tops = tops.substring(0, (tops.length-1));
+    return '$id..$title..$description..$quids..$subs..$tops..${start.toString()}..${duration.inMinutes.toString()}';
+  }
+
+  static Exam? parse(String? string) {
+    if (string == null) {
+      return null;
+    }
+    final parts = string.split('..');
+
+    List<String> joints = parts[3].trim().split('~');
+    List<(String, String)> qids = [];
+    for (var element in joints) {
+      final parts = element.trim().split(',');
+      qids.add((parts[0], parts[1]));
+    }
+    List<String> subjects = parts[4].trim().split(',').map((e) => e).toList();
+    List<String> topics = parts[5].trim().split(',').map((e) => e).toList();
+
+    return Exam(
+      id: parts[0],
+      title: parts[1],
+      description: parts[2],
+      questionIds: qids,
+      subjects: subjects,
+      topics: topics,
+      start: DateTime.parse(parts[6]),
+      duration: Duration(
+        minutes: int.parse(parts[7]),
+      ),
+    );
   }
 }
