@@ -37,6 +37,11 @@ class _McqQuestionState extends State<McqQuestion> {
       selected = context.watch<ExamProvider>().answers[widget.count];
     }
 
+    bool gotIt = false;
+    if (widget.selected != null) {
+      gotIt = widget.selected == widget.question.correctIndex;
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: getDynamicPadding(context), vertical: 10),
@@ -44,6 +49,17 @@ class _McqQuestionState extends State<McqQuestion> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (widget.complete)
+            ListTile(
+              tileColor: gotIt ? Colors.green : Colors.red,
+              textColor: Colors.white,
+              iconColor: Colors.white,
+              title: Text(gotIt ? 'Correct' : 'Wrong'),
+              leading: Icon(gotIt ? Icons.check_rounded : Icons.close_rounded),
+            ),
+          const SizedBox(
+            height: 10,
+          ),
           Text(
             widget.question.question,
             style: Theme.of(context)
@@ -65,36 +81,40 @@ class _McqQuestionState extends State<McqQuestion> {
                   } else if (isSelected) {
                     tileColor = Colors.red;
                   }
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: RadioMenuButton(
-                      style: ButtonStyle(
-                        iconColor: MaterialStatePropertyAll(
-                          isSelected || isCorrect ? Colors.white : null,
-                        ),
-                        textStyle: MaterialStatePropertyAll(
-                          TextStyle(
-                            color:
-                                isSelected || isCorrect ? Colors.white : null,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: RadioMenuButton(
+                        style: ButtonStyle(
+                          iconColor: MaterialStatePropertyAll(
+                            isSelected || isCorrect
+                                ? Colors.white
+                                : Theme.of(context).textTheme.bodyLarge!.color,
                           ),
+                          foregroundColor: MaterialStatePropertyAll(
+                            isSelected || isCorrect
+                                ? Colors.white
+                                : Theme.of(context).textTheme.bodyLarge!.color,
+                          ),
+                          backgroundColor: MaterialStatePropertyAll(tileColor),
                         ),
-                        backgroundColor: MaterialStatePropertyAll(tileColor),
-                      ),
-                      value: e,
-                      groupValue: widget.selected ?? selected,
-                      onChanged: widget.selected == null
-                          ? (_) {}
-                          : (value) => setState(
-                                () {
-                                  selected = value as int;
-                                  widget.onSelect((
-                                    widget.count,
-                                    value,
-                                  ));
-                                },
-                              ),
-                      child: Text(
-                        widget.question.options[e],
+                        value: e,
+                        groupValue: widget.selected ?? selected,
+                        onChanged: widget.complete
+                            ? (_) {}
+                            : (value) => setState(
+                                  () {
+                                    selected = value as int;
+                                    widget.onSelect((
+                                      widget.count,
+                                      value,
+                                    ));
+                                  },
+                                ),
+                        child: Text(
+                          widget.question.options[e],
+                        ),
                       ),
                     ),
                   );

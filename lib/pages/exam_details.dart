@@ -245,8 +245,11 @@ class ExamDetailsMainColumn extends StatelessWidget {
           // * Match examId
           // * For ongoing exam case with same examId + normal case
           if (!(context.watch<ExamProvider>().isExamOngoing &&
-                  context.read<ExamProvider>().ongoingExam!.id != exam.id) &&
-              context
+                      context.read<ExamProvider>().ongoingExam!.id !=
+                          exam.id) &&
+                  context.watch<ExamProvider>().isExamOngoing == false
+              ? true
+              : context
                   .watch<ExamProvider>()
                   .ongoingExam!
                   .start
