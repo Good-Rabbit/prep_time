@@ -12,23 +12,16 @@ import 'package:preptime/services/settings_provider.dart';
 import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase
-  //() FirebaseApp app = await Firebase.initializeApp(
-  //     options: const FirebaseOptions(
-  //   apiKey: 'AIzaSyCH38zdmHoOLGop12VC2H4cg3Zj1MZBBZw',
-  //   appId: '1:609123727992:web:c46ca5556a8ca2c4728b8d',
-  //   messagingSenderId: '609123727992',
-  //   projectId: 'preptime-bd',
-  //   authDomain: "preptime-bd.firebaseapp.com",
-  //   databaseURL:
-  //       "https://preptime-bd-default-rtdb.asia-southeast1.firebasedatabase.app",
-  //   storageBucket: "preptime-bd.appspot.com",
-  // ));
+
+  // * Initialize default firebase
   FirebaseApp app = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
+  setPathUrlStrategy();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CourseProvider()),

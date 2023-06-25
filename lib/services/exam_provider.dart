@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:preptime/auth/auth.dart';
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ExamProvider with ChangeNotifier {
   // * Live exams
   List<Exam>? _exams;
+  List<ExamFragment>? _pastExams;
 
   bool isExamOngoing = false;
   Exam? ongoingExam;
@@ -24,8 +26,18 @@ class ExamProvider with ChangeNotifier {
 
   DatabaseReference? examsRef;
 
+  Stream<QuerySnapshot<Map<String, dynamic>>>? pastExamsStream;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      pastExamsSubscription;
+
   ExamProvider() {
     getPrefsAndCheck();
+  }
+
+  List<ExamFragment>? get pastExams => _pastExams;
+
+  set pastExams(List<ExamFragment>? value) {
+    _pastExams = value;
   }
 
   retrieveExams() async {
@@ -41,6 +53,24 @@ class ExamProvider with ChangeNotifier {
         },
       ).onError((e) {
         log(e.toString());
+      });
+    }
+  }
+
+  retrieveRegisteredForExams() async {
+    if (pastExamsStream == null) {
+      pastExamsStream = FbProvider.store!
+          .collection('users')
+          .doc(AuthProvider.getUid())
+          .collection('exams')
+          .orderBy('start')
+          .limitToLast(10)
+          .snapshots();
+      pastExamsSubscription = pastExamsStream!.listen((event) {
+        _pastExams = event.docs
+            .map((e) => ExamFragment.fromDocumentSnapshot(e))
+            .toList();
+        notifyListeners();
       });
     }
   }
@@ -79,10 +109,11 @@ class ExamProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  completeOngoingExam() {
-    uploadExamResult();
-    ongoingExam = null;
+  completeOngoingExam() async {
     isExamOngoing = false;
+    notifyListeners();
+    await uploadOngoingExamResult();
+    ongoingExam = null;
     examTill = null;
     resetOngoingExamAnswers();
     storeExamStatus();
@@ -139,7 +170,27 @@ class ExamProvider with ChangeNotifier {
     return questions;
   }
 
-  Future<bool> uploadExamResult() async {
+  Future<bool> registerForExam(Exam exam) async {
+    try {
+      FbProvider.store!
+          .collection('users')
+          .doc(AuthProvider.getUid())
+          .collection('exams')
+          .doc(exam.id)
+          .set({
+        'title': exam.title,
+        'start': exam.start,
+        'total': exam.questionIds.length,
+        'complete': false,
+      });
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> uploadOngoingExamResult() async {
     int marks = 0;
     for (int i = 0; i < correctAnswers.length; i++) {
       if (answers[i] == correctAnswers[i]) {
@@ -154,8 +205,11 @@ class ExamProvider with ChangeNotifier {
           .doc(ongoingExam!.id)
           .set({
         'marks': marks,
+        'total': ongoingExam!.questionIds.length,
+        'start': ongoingExam!.start.toString(),
         'title': ongoingExam!.title,
         'answers': answers,
+        'complete': true,
       });
       return true;
     } catch (e) {

@@ -30,9 +30,10 @@ class _McqQuestionState extends State<McqQuestion> {
   @override
   Widget build(BuildContext context) {
     // ! Handle empty error for a limited time frame
+    // ! While checking if exam is ongoing or complete
     if (context.watch<ExamProvider>().answers.isEmpty &&
         widget.selected == null) {
-      return const CircularProgressIndicator();
+      return const Center(child: CircularProgressIndicator());
     } else if (context.read<ExamProvider>().answers.isNotEmpty) {
       selected = context.watch<ExamProvider>().answers[widget.count];
     }
