@@ -14,8 +14,8 @@ String getTranslation(String text, BuildContext context) {
     case 'Courses':
       label = strings(context).courses;
       break;
-    case 'Board':
-      label = strings(context).board;
+    case 'Stats':
+      label = strings(context).stats;
       break;
     default:
       break;

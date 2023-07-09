@@ -36,7 +36,6 @@ class _LiveExamListState extends State<LiveExamList> {
   @override
   Widget build(BuildContext context) {
     if (context.watch<ExamProvider>().exams == null) {
-      // TODO loading
       return SizedBox(
         height: 275,
         child: ListView.builder(

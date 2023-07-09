@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:preptime/data/answers.dart';
 import 'package:preptime/data/question.dart';
 import 'package:preptime/pages/fragments/mcq.dart';
 import 'package:preptime/services/exam_provider.dart';
+import 'package:preptime/services/stopwatch.dart';
 import 'package:preptime/theme/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/exam.dart';
 
@@ -24,16 +29,47 @@ class TestTakerBody extends StatefulWidget {
 
 class _TestTakerBodyState extends State<TestTakerBody> {
   List<McqQuestion>? mcqQuestions;
-  List<int> selectedAnswers = [];
+  List<Answer> selectedAnswers = [];
   int selected = 1;
   int marks = 0;
+  List<StopWatch> stopwatches = [];
+
+  initStopwatches() {
+    for (var _ in widget.questions) {
+      stopwatches.add(StopWatch());
+    }
+  }
+
+  syncStopwatchWithStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    for (var i = 0; i < widget.questions.length; i++) {
+      stopwatches[i].seconds =
+          prefs.getInt(widget.questions[i].subject + widget.questions[i].id) ??
+              0;
+    }
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      prefs.setInt(
+          widget.questions[selected].subject + widget.questions[selected].id,
+          stopwatches[selected].elapsedSeconds);
+    });
+  }
 
   @override
   void initState() {
+    initStopwatches();
+    syncStopwatchWithStorage();
+    // * Start the first stopwatch
+    stopwatches[0].start();
     super.initState();
     // * Initialize with empty answers
-    for (var _ in widget.questions) {
-      selectedAnswers.add(100);
+    for (var q in widget.questions) {
+      selectedAnswers.add(Answer(
+        selected: 100,
+        topics: q.topics,
+        subject: q.subject,
+        timeTaken: 100,
+        proficiencyIndex: 0,
+      ));
     }
 
     if (context.read<ExamProvider>().answers.isEmpty) {
@@ -53,10 +89,12 @@ class _TestTakerBodyState extends State<TestTakerBody> {
           complete: context.watch<ExamProvider>().isExamOngoing ? false : true,
           selected: context.watch<ExamProvider>().isExamOngoing
               ? null
-              : selectedAnswers[i],
+              : selectedAnswers[i].selected,
           count: questionCount++,
           onSelect: (value) {
-            selectedAnswers[value.$1] = value.$2;
+            selectedAnswers[value.$1].selected = value.$2;
+            selectedAnswers[value.$1].timeTaken =
+                stopwatches[selected - 1].elapsedSeconds;
             context.read<ExamProvider>().setOngoingExamAnswers(selectedAnswers);
           },
         ),
@@ -77,7 +115,9 @@ class _TestTakerBodyState extends State<TestTakerBody> {
                   borderRadius: BorderRadius.circular(10),
                   onTap: () {
                     setState(() {
+                      stopwatches[selected - 1].stop();
                       selected = index;
+                      stopwatches[selected - 1].start();
                     });
                   },
                   child: ClipRRect(
@@ -110,16 +150,22 @@ class _TestTakerBodyState extends State<TestTakerBody> {
   }
 
   Scaffold testTakerPageFrame(BuildContext context, Widget child) {
+    // * Calculate results when exam is over
     if (!context.read<ExamProvider>().isExamOngoing) {
       marks = 0;
       for (int i = 0;
-          i < context.read<ExamProvider>().correctAnswers.length;
+          i < context.read<ExamProvider>().correctAnswersIndexes.length;
           i++) {
-        if (selectedAnswers[i] ==
-            context.read<ExamProvider>().correctAnswers[i]) {
+        if (selectedAnswers[i].selected ==
+            context.read<ExamProvider>().correctAnswersIndexes[i]) {
+          // * Set calculated proficiency index for correct
+          selectedAnswers[i].proficiencyIndex =
+              (widget.questions[i].time / selectedAnswers[i].timeTaken * 100)
+                  .toInt();
           marks++;
         }
       }
+      context.read<ExamProvider>().setOngoingExamAnswers(selectedAnswers);
     }
     return Scaffold(
       appBar: AppBar(

@@ -135,7 +135,7 @@ class ExamFragment {
       examId: snapshot.id,
       title: snapshot.data()['title'] as String,
       total: snapshot.data()['total'] as int,
-      start: DateTime.parse(snapshot.data()['start'] as String),
+      start: (snapshot.data()['start'] as Timestamp).toDate(),
       complete: snapshot.data()['complete'] as bool,
       answers: answers,
       marks: snapshot.data()['marks'] as int,

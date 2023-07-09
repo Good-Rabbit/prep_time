@@ -44,7 +44,7 @@ class _LiveTickerState extends State<LiveTicker> {
   @override
   Widget build(BuildContext context) {
     examTill =
-        (context.read<ExamProvider>().examTill ?? DateTime.now()).difference(
+        (context.watch<ExamProvider>().examTill ?? DateTime.now()).difference(
       DateTime.now(),
     );
     int seconds = examTill.inSeconds % 60;

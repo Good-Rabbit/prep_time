@@ -3,6 +3,7 @@ import 'package:preptime/data/exam.dart';
 import 'package:preptime/data/question.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fragments/test_taker_body.dart';
 
@@ -18,9 +19,12 @@ class TestTakerShell extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data != null) {
-            // TODO implement encryption
             for (Question question in snapshot.data!) {
-              context.read<ExamProvider>().correctAnswers.add(question.correctIndex);
+              // resetTimer(question);
+              context
+                  .read<ExamProvider>()
+                  .correctAnswersIndexes
+                  .add(question.correctIndex);
             }
             return TestTakerBody(
               questions: snapshot.data!,
@@ -43,4 +47,9 @@ class TestTakerShell extends StatelessWidget {
       },
     );
   }
+}
+
+resetTimer(Question q) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove(q.subject + q.id);
 }

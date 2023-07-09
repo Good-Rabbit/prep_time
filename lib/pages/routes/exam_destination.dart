@@ -27,7 +27,7 @@ class _ExamDestinationState extends State<ExamDestination> {
       children: [
         ...context.watch<ExamProvider>().pastExams!.map(
           (e) {
-            return ParticipatingExamCard(examFragment: e);
+          return ParticipatingExamCard(examFragment: e);
           },
         ).toList(),
       ],

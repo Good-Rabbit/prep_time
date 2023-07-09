@@ -20,23 +20,23 @@ class Destination {
 
 const List<Destination> destinations = [
   Destination(
-      icon: Icons.home,
+      icon: Icons.home_rounded,
       label: 'Home',
       route: '/',
       destination: HomeDestination()),
   Destination(
-      icon: Icons.edit,
+      icon: Icons.edit_rounded,
       label: 'Exams',
       route: '/exams',
       destination: ExamDestination()),
   Destination(
-      icon: Icons.book,
+      icon: Icons.book_rounded,
       label: 'Courses',
       route: '/courses',
       destination: ClassDestination()),
   Destination(
-      icon: Icons.leaderboard,
-      label: 'Board',
-      route: '/board',
+      icon: Icons.leaderboard_rounded,
+      label: 'Stats',
+      route: '/stats',
       destination: BoardDestination()),
 ];

@@ -27,7 +27,6 @@ class CourseProvider with ChangeNotifier {
   }
 
   List<Course>? getCourses() {
-    // TODO implement : from firestore
     return _courses;
   }
 

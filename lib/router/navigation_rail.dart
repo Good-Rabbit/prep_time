@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:preptime/functions/misc_label_translator.dart';
+import 'package:preptime/functions/nav_label_translator.dart';
 
 import 'destinations.dart';
 

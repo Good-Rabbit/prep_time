@@ -28,6 +28,11 @@ class _McqQuestionState extends State<McqQuestion> {
   int selected = 100;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // ! Handle empty error for a limited time frame
     // ! While checking if exam is ongoing or complete
@@ -35,7 +40,7 @@ class _McqQuestionState extends State<McqQuestion> {
         widget.selected == null) {
       return const Center(child: CircularProgressIndicator());
     } else if (context.read<ExamProvider>().answers.isNotEmpty) {
-      selected = context.watch<ExamProvider>().answers[widget.count];
+      selected = context.watch<ExamProvider>().answers[widget.count].selected;
     }
 
     bool gotIt = false;
@@ -102,17 +107,7 @@ class _McqQuestionState extends State<McqQuestion> {
                         ),
                         value: e,
                         groupValue: widget.selected ?? selected,
-                        onChanged: widget.complete
-                            ? (_) {}
-                            : (value) => setState(
-                                  () {
-                                    selected = value as int;
-                                    widget.onSelect((
-                                      widget.count,
-                                      value,
-                                    ));
-                                  },
-                                ),
+                        onChanged: (_) {},
                         child: Text(
                           widget.question.options[e],
                         ),
@@ -127,10 +122,8 @@ class _McqQuestionState extends State<McqQuestion> {
                       onChanged: (value) => setState(
                         () {
                           selected = value ?? 100;
-                          widget.onSelect((
-                            widget.count,
-                            value!,
-                          ));
+                          widget.onSelect(
+                              (widget.count, value!));
                         },
                       ),
                       child: Text(

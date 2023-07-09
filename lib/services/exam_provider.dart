@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:preptime/auth/auth.dart';
+import 'package:preptime/data/answers.dart';
 import 'package:preptime/data/classes.dart';
 import 'package:preptime/data/exam.dart';
 import 'package:preptime/data/question.dart';
@@ -14,14 +15,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ExamProvider with ChangeNotifier {
   // * Live exams
   List<Exam>? _exams;
-  List<ExamFragment>? _pastExams;
+  List<ExamFragment>? pastExams;
 
   bool isExamOngoing = false;
   Exam? ongoingExam;
   Classes? _selectedClass;
   DateTime? examTill;
-  List<int> answers = [];
-  List<int> correctAnswers = [];
+  List<Question> questions = [];
+  List<Answer> answers = [];
+  List<int> correctAnswersIndexes = [];
   SharedPreferences? prefs;
 
   DatabaseReference? examsRef;
@@ -32,12 +34,6 @@ class ExamProvider with ChangeNotifier {
 
   ExamProvider() {
     getPrefsAndCheck();
-  }
-
-  List<ExamFragment>? get pastExams => _pastExams;
-
-  set pastExams(List<ExamFragment>? value) {
-    _pastExams = value;
   }
 
   retrieveExams() async {
@@ -67,7 +63,7 @@ class ExamProvider with ChangeNotifier {
           .limitToLast(10)
           .snapshots();
       pastExamsSubscription = pastExamsStream!.listen((event) {
-        _pastExams = event.docs
+        pastExams = event.docs
             .map((e) => ExamFragment.fromDocumentSnapshot(e))
             .toList();
         notifyListeners();
@@ -85,10 +81,10 @@ class ExamProvider with ChangeNotifier {
     // prefs!.clear();
     _selectedClass =
         Classes.fromString(prefs!.getString('selectedClass') ?? '');
-    retrieveAndCheckExamStatus();
+    retrieveAndCheckExamStatusFromStorage();
   }
 
-  setOngoingExamAnswers(List<int> answers) async {
+  setOngoingExamAnswers(List<Answer> answers) async {
     prefs!.setStringList('answers${_selectedClass!.key}',
         answers.map((e) => e.toString()).toList());
     this.answers = answers;
@@ -105,37 +101,29 @@ class ExamProvider with ChangeNotifier {
     examTill = exam.start.add(exam.duration);
     Duration timeLeft = examTill!.difference(DateTime.now());
     Future.delayed(timeLeft, () => completeOngoingExam());
-    storeExamStatus();
+    storeExamStatusToStorage();
     notifyListeners();
   }
 
-  completeOngoingExam() async {
-    isExamOngoing = false;
-    notifyListeners();
-    await uploadOngoingExamResult();
-    ongoingExam = null;
-    examTill = null;
-    resetOngoingExamAnswers();
-    storeExamStatus();
-    notifyListeners();
-  }
-
-  storeExamStatus() async {
-    // * Store exam status to storage
-
+  storeExamStatusToStorage() async {
     prefs!.setBool('examOngoing${_selectedClass!.key}', isExamOngoing);
-    prefs!.setString('exam${_selectedClass!.key}', ongoingExam!.toString());
-    prefs!.setString('examTill${_selectedClass!.key}', examTill.toString());
+    if (!isExamOngoing) {
+      prefs!.remove('exam${_selectedClass!.key}');
+      prefs!.remove('examTill${_selectedClass!.key}');
+    } else {
+      prefs!.setString('exam${_selectedClass!.key}', ongoingExam!.toString());
+      prefs!.setString('examTill${_selectedClass!.key}', examTill.toString());
+    }
   }
 
-  retrieveAndCheckExamStatus() async {
-    // * Get exam status from storage
+  retrieveAndCheckExamStatusFromStorage() async {
     isExamOngoing =
         prefs!.getBool('examOngoing${_selectedClass!.key}') ?? false;
     ongoingExam = Exam.parse(prefs!.getString('exam${_selectedClass!.key}'));
-    answers = (prefs!.getStringList('answers${_selectedClass!.key}') ?? [])
-        .map((e) => int.parse(e))
-        .toList();
+    answers =
+        (prefs!.getStringList('answers${_selectedClass!.key}') ?? []).map((e) {
+      return Answer.fromString(e);
+    }).toList();
     String till = prefs!.getString('examTill${_selectedClass!.key}') ?? '';
     examTill = DateTime.tryParse(till);
     if (examTill != null && isExamOngoing) {
@@ -155,7 +143,6 @@ class ExamProvider with ChangeNotifier {
   }
 
   Future<List<Question>> getExamQuestions(Exam exam) async {
-    List<Question> questions = [];
     for ((String id, String sub) qid in exam.questionIds) {
       await FbProvider.store!
           .collection(qid.$2)
@@ -163,7 +150,8 @@ class ExamProvider with ChangeNotifier {
           .get()
           .then((value) {
         if (value.exists) {
-          questions.add(Question.fromDataSnapshot(value)!);
+          questions.add(
+              Question.fromDataSnapshot(snapshot: value, subject: qid.$2)!);
         }
       });
     }
@@ -190,10 +178,30 @@ class ExamProvider with ChangeNotifier {
     }
   }
 
+  completeOngoingExam() async {
+    isExamOngoing = false;
+    notifyListeners();
+    // * Wait for processes before uploading exam and resetting variables
+    await Future.delayed(const Duration(seconds: 1), uploadOngoingExamResult);
+    ongoingExam = null;
+    examTill = null;
+    resetOngoingExamAnswers();
+    resetPerQuestionTimers();
+    storeExamStatusToStorage();
+    notifyListeners();
+  }
+
+  resetPerQuestionTimers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    for (var question in questions) {
+      prefs.remove(question.subject + question.id);
+    }
+  }
+
   Future<bool> uploadOngoingExamResult() async {
     int marks = 0;
-    for (int i = 0; i < correctAnswers.length; i++) {
-      if (answers[i] == correctAnswers[i]) {
+    for (int i = 0; i < correctAnswersIndexes.length; i++) {
+      if (answers[i].selected == correctAnswersIndexes[i]) {
         marks++;
       }
     }
@@ -206,11 +214,40 @@ class ExamProvider with ChangeNotifier {
           .set({
         'marks': marks,
         'total': ongoingExam!.questionIds.length,
-        'start': ongoingExam!.start.toString(),
+        'start': ongoingExam!.start,
         'title': ongoingExam!.title,
-        'answers': answers,
+        'answers': answers.map((e) => e.selected).toList(),
         'complete': true,
       });
+
+      // TODO Calculate and upload proficiency
+      Map<String, int> topicWiseProficiencies = {};
+      Map<String, int> topicQuestionCount = {};
+      Map<String, int> topicTotalProficiency = {};
+      Set<String> topics = {};
+
+      for (int i = 0; i < questions.length; i++) {
+        for (var t in questions[i].topics) {
+          topics.add(t);
+          topicQuestionCount[t] = (topicQuestionCount[t] ?? 0) + 1;
+        }
+        for (var t in answers[i].topics) {
+          topicTotalProficiency[t] =
+              (topicTotalProficiency[t] ?? 0) + answers[i].proficiencyIndex;
+        }
+      }
+
+      for (var t in topics) {
+        topicWiseProficiencies[t] =
+            topicTotalProficiency[t]! ~/ topicQuestionCount[t]!;
+      }
+
+      FbProvider.store!
+          .collection('users')
+          .doc(AuthProvider.getUid())
+          .collection('stats')
+          .doc(ongoingExam!.start.add(ongoingExam!.duration).toString())
+          .set(topicWiseProficiencies);
       return true;
     } catch (e) {
       log(e.toString());

@@ -246,9 +246,7 @@ class ExamDetailsMainColumn extends StatelessWidget {
           // * For ongoing exam case with same examId + normal case
           if (!(context.watch<ExamProvider>().isExamOngoing &&
                   context.read<ExamProvider>().ongoingExam!.id != exam.id) &&
-              exam.start
-                  .add(context.watch<ExamProvider>().ongoingExam!.duration)
-                  .isAfter(DateTime.now()))
+              exam.start.add(exam.duration).isAfter(DateTime.now()))
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 0),
               child: ElevatedButton.icon(

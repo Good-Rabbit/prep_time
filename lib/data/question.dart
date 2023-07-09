@@ -6,6 +6,7 @@ class Question {
     required this.question,
     required this.options,
     required this.correctIndex,
+    required this.subject,
     required this.difficulty,
     required this.time,
     required this.topics,
@@ -15,12 +16,15 @@ class Question {
   final String question;
   final List<String> options;
   final int correctIndex;
+  final String subject;
   final int difficulty;
-  final double time;
+  final int time;
   final List<String> topics;
 
-  static Question? fromDataSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  static Question? fromDataSnapshot({
+    required DocumentSnapshot<Map<String, dynamic>> snapshot,
+    required String subject,
+  }) {
     List<String> options = snapshot
         .data()!['opts']
         .toString()
@@ -39,14 +43,16 @@ class Question {
         .split(',')
         .map((e) => e.trim())
         .toList();
-    return Question(
+    final question = Question(
       id: snapshot.id,
       question: snapshot.data()!['ques'] as String,
       options: options,
+      subject: subject,
       correctIndex: snapshot.data()!['ans'] as int,
       difficulty: snapshot.data()!['lvl'] as int,
-      time: snapshot.data()!['time'] as double,
+      time: snapshot.data()!['time'] as int,
       topics: topics,
     );
+    return question;
   }
 }
