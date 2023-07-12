@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:preptime/pages/routes/board_destination.dart';
+import 'package:preptime/pages/routes/stats_destination.dart';
 import 'package:preptime/pages/routes/class_destination.dart';
 import 'package:preptime/pages/routes/exam_destination.dart';
 

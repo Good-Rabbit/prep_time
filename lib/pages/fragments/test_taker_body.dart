@@ -48,9 +48,12 @@ class _TestTakerBodyState extends State<TestTakerBody> {
               0;
     }
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      prefs.setInt(
-          widget.questions[selected].subject + widget.questions[selected].id,
-          stopwatches[selected].elapsedSeconds);
+      if (mounted) {
+        prefs.setInt(
+            widget.questions[selected - 1].subject +
+                widget.questions[selected - 1].id,
+            stopwatches[selected - 1].elapsedSeconds);
+      }
     });
   }
 
@@ -151,21 +154,16 @@ class _TestTakerBodyState extends State<TestTakerBody> {
 
   Scaffold testTakerPageFrame(BuildContext context, Widget child) {
     // * Calculate results when exam is over
-    if (!context.read<ExamProvider>().isExamOngoing) {
+    if (!context.watch<ExamProvider>().isExamOngoing) {
       marks = 0;
       for (int i = 0;
           i < context.read<ExamProvider>().correctAnswersIndexes.length;
           i++) {
         if (selectedAnswers[i].selected ==
             context.read<ExamProvider>().correctAnswersIndexes[i]) {
-          // * Set calculated proficiency index for correct
-          selectedAnswers[i].proficiencyIndex =
-              (widget.questions[i].time / selectedAnswers[i].timeTaken * 100)
-                  .toInt();
           marks++;
         }
       }
-      context.read<ExamProvider>().setOngoingExamAnswers(selectedAnswers);
     }
     return Scaffold(
       appBar: AppBar(

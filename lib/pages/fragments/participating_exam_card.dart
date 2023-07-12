@@ -28,7 +28,6 @@ class _ParticipatingExamCardState extends State<ParticipatingExamCard> {
             Text(
               'Exam - ${widget.examFragment.examId}',
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
                 fontSize: 17,
                 color: Colors.white,
               ),
@@ -37,7 +36,6 @@ class _ParticipatingExamCardState extends State<ParticipatingExamCard> {
               widget.examFragment.title,
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
               ),
             ),
             Row(

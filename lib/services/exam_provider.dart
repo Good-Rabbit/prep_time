@@ -9,13 +9,16 @@ import 'package:preptime/data/answers.dart';
 import 'package:preptime/data/classes.dart';
 import 'package:preptime/data/exam.dart';
 import 'package:preptime/data/question.dart';
+import 'package:preptime/data/stats.dart';
 import 'package:preptime/services/firebase_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExamProvider with ChangeNotifier {
   // * Live exams
   List<Exam>? _exams;
+
   List<ExamFragment>? pastExams;
+  List<Stats>? stats;
 
   bool isExamOngoing = false;
   Exam? ongoingExam;
@@ -31,6 +34,9 @@ class ExamProvider with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>>? pastExamsStream;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
       pastExamsSubscription;
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? statsStream;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? statsSubscription;
 
   ExamProvider() {
     getPrefsAndCheck();
@@ -60,12 +66,29 @@ class ExamProvider with ChangeNotifier {
           .doc(AuthProvider.getUid())
           .collection('exams')
           .orderBy('start')
-          .limitToLast(10)
+          .limitToLast(7)
           .snapshots();
       pastExamsSubscription = pastExamsStream!.listen((event) {
         pastExams = event.docs
             .map((e) => ExamFragment.fromDocumentSnapshot(e))
             .toList();
+        notifyListeners();
+      });
+    }
+  }
+
+  retrievePreviousExamStats() async {
+    if (statsStream == null) {
+      statsStream = FbProvider.store!
+          .collection('users')
+          .doc(AuthProvider.getUid())
+          .collection('stats')
+          .limit(7)
+          .snapshots();
+      statsSubscription = statsStream!.listen((event) {
+        stats = event.docs.map((e) {
+          return Stats.fromDocumentSnapshot(e);
+        }).toList();
         notifyListeners();
       });
     }
@@ -143,6 +166,7 @@ class ExamProvider with ChangeNotifier {
   }
 
   Future<List<Question>> getExamQuestions(Exam exam) async {
+    questions = [];
     for ((String id, String sub) qid in exam.questionIds) {
       await FbProvider.store!
           .collection(qid.$2)
@@ -180,9 +204,19 @@ class ExamProvider with ChangeNotifier {
 
   completeOngoingExam() async {
     isExamOngoing = false;
+    // * Set calculated proficiency index for correct
+    for (int i = 0; i < correctAnswersIndexes.length; i++) {
+      if (answers[i].selected == correctAnswersIndexes[i]) {
+        if (answers[i].timeTaken == 0) {
+          answers[i].timeTaken = 1;
+        }
+        answers[i].proficiencyIndex =
+            (questions[i].time / answers[i].timeTaken * 100).toInt();
+      }
+    }
     notifyListeners();
     // * Wait for processes before uploading exam and resetting variables
-    await Future.delayed(const Duration(seconds: 1), uploadOngoingExamResult);
+    await Future.delayed(const Duration(seconds: 2), uploadOngoingExamResult);
     ongoingExam = null;
     examTill = null;
     resetOngoingExamAnswers();
@@ -220,26 +254,25 @@ class ExamProvider with ChangeNotifier {
         'complete': true,
       });
 
-      // TODO Calculate and upload proficiency
       Map<String, int> topicWiseProficiencies = {};
       Map<String, int> topicQuestionCount = {};
       Map<String, int> topicTotalProficiency = {};
       Set<String> topics = {};
 
       for (int i = 0; i < questions.length; i++) {
-        for (var t in questions[i].topics) {
-          topics.add(t);
-          topicQuestionCount[t] = (topicQuestionCount[t] ?? 0) + 1;
+        for (var topic in questions[i].topics) {
+          topics.add(topic);
+          topicQuestionCount[topic] = (topicQuestionCount[topic] ?? 0) + 1;
         }
-        for (var t in answers[i].topics) {
-          topicTotalProficiency[t] =
-              (topicTotalProficiency[t] ?? 0) + answers[i].proficiencyIndex;
+        for (var topic in answers[i].topics) {
+          topicTotalProficiency[topic] =
+              (topicTotalProficiency[topic] ?? 0) + answers[i].proficiencyIndex;
         }
       }
 
-      for (var t in topics) {
-        topicWiseProficiencies[t] =
-            topicTotalProficiency[t]! ~/ topicQuestionCount[t]!;
+      for (var topic in topics) {
+        topicWiseProficiencies[topic] =
+            topicTotalProficiency[topic]! ~/ topicQuestionCount[topic]!;
       }
 
       FbProvider.store!
