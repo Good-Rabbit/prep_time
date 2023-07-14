@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:preptime/auth/auth.dart';
 import 'package:preptime/pages/fragments/stats_card.dart';
 import 'package:preptime/pages/login.dart';
@@ -28,7 +29,12 @@ class _BoardDestinationState extends State<BoardDestination> {
       children: [
         ...context.watch<ExamProvider>().stats!.map(
           (e) {
-            return StatsCard(stats: e);
+            return InkWell(
+              onTap: () {
+                context.go('/stats/per',extra: e);
+              },
+              child: StatsCard(stats: e),
+            );
           },
         ).toList(),
       ],

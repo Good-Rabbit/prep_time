@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:preptime/data/exam.dart';
+import 'package:preptime/data/stats.dart';
 import 'package:preptime/pages/class_selector.dart';
 import 'package:preptime/pages/course_details.dart';
 import 'package:preptime/pages/exam_details.dart';
 import 'package:preptime/pages/four_o_four.dart';
 import 'package:preptime/pages/shell.dart';
+import 'package:preptime/pages/statistics.dart';
 import 'package:preptime/pages/test_taker.dart';
 import 'package:preptime/router/destinations.dart';
 
@@ -41,9 +43,21 @@ final router = GoRouter(
           ),
         ),
         GoRoute(
+          path: '/test_taker/:id',
+          pageBuilder: (context, state) => MaterialPage(
+            child: TestTakerShell(id:state.pathParameters['id']??''),
+          ),
+        ),
+        GoRoute(
           path: '/test_taker',
           pageBuilder: (context, state) => MaterialPage(
             child: TestTakerShell(exam: state.extra as Exam),
+          ),
+        ),
+        GoRoute(
+          path: '/stats/per',
+          pageBuilder: (context, state) => MaterialPage(
+            child: Statistics(stats: state.extra as Stats,),
           ),
         ),
       ],
