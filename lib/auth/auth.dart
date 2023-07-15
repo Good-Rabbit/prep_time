@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -184,7 +185,7 @@ class AuthProvider with ChangeNotifier {
     _imageUrl = null;
     _currentUser = null;
 
-    notifyListeners();
+    Restart.restartApp(webOrigin: kIsWeb ? Uri.base.origin.toString() : null);
 
     log("User signed out");
   }

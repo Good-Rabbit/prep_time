@@ -1,43 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:preptime/auth/auth.dart';
+import 'package:preptime/pages/fragments/empty.dart';
 import 'package:preptime/pages/fragments/stats_card.dart';
 import 'package:preptime/pages/login.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:provider/provider.dart';
 
-class BoardDestination extends StatefulWidget {
-  const BoardDestination({super.key});
+class StatsDestination extends StatelessWidget {
+  const StatsDestination({super.key});
 
-  @override
-  State<BoardDestination> createState() => _BoardDestinationState();
-}
-
-class _BoardDestinationState extends State<BoardDestination> {
   @override
   Widget build(BuildContext context) {
     if (context.watch<AuthProvider>().getCurrentUser() == null) {
       return const AuthDialog(shouldPopAutomatically: false);
     }
     if (context.watch<ExamProvider>().stats == null) {
-      context.watch<ExamProvider>().retrievePreviousExamStats();
+      context.read<ExamProvider>().retrievePreviousExamStats();
       return const Center(
         child: CircularProgressIndicator(),
       );
-    }
-    return ListView(
-      children: [
-        ...context.watch<ExamProvider>().stats!.map(
-          (e) {
-            return InkWell(
-              onTap: () {
-                context.go('/stats/per',extra: e);
+    } else {
+      if (context.watch<ExamProvider>().stats!.isNotEmpty) {
+        return ListView(
+          children: [
+            ...context.read<ExamProvider>().stats!.map(
+              (e) {
+                return InkWell(
+                  onTap: () {
+                    context.push('/stats/per', extra: e);
+                  },
+                  child: StatsCard(stats: e),
+                );
               },
-              child: StatsCard(stats: e),
-            );
-          },
-        ).toList(),
-      ],
-    );
+            ).toList(),
+          ],
+        );
+      } else {
+        return const Empty();
+      }
+    }
   }
 }

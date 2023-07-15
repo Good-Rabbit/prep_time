@@ -1,37 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:preptime/auth/auth.dart';
+import 'package:preptime/pages/fragments/empty.dart';
 import 'package:preptime/pages/fragments/participating_exam_card.dart';
 import 'package:preptime/pages/login.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:provider/provider.dart';
 
-class ExamDestination extends StatefulWidget {
+class ExamDestination extends StatelessWidget {
   const ExamDestination({super.key});
 
-  @override
-  State<ExamDestination> createState() => _ExamDestinationState();
-}
-
-class _ExamDestinationState extends State<ExamDestination> {
   @override
   Widget build(BuildContext context) {
     if (context.watch<AuthProvider>().getCurrentUser() == null) {
       return const AuthDialog(shouldPopAutomatically: false);
     }
     if (context.watch<ExamProvider>().pastExams == null) {
-      context.watch<ExamProvider>().retrieveRegisteredForExams();
+      context.read<ExamProvider>().retrieveRegisteredForExams();
       return const Center(
         child: CircularProgressIndicator(),
       );
-    }
-    return ListView(
-      children: [
-        ...context.watch<ExamProvider>().pastExams!.map(
-          (e) {
+    } else {
+      if (context.watch<ExamProvider>().pastExams!.isNotEmpty) {
+        return ListView(
+          children: [
+            ...context.watch<ExamProvider>().pastExams!.map(
+              (e) {
             return ParticipatingExamCard(examFragment: e);
-          },
-        ).toList(),
-      ],
-    );
+              },
+            ).toList(),
+          ],
+        );
+      } else {
+        return const Empty();
+      }
+    }
   }
 }

@@ -14,6 +14,7 @@
     "description": "The current language"
   },
   "appname": "Prep Time",
+  "bad": "Bad",
   "changeClass": "Change Class",
   "classValue": "Class",
   "classes": "Classes",
@@ -23,7 +24,9 @@
   "examId": "Exam ID",
   "examOngoing": "Exam is already ongoing!",
   "exams": "Exams",
+  "good": "Good",
   "home": "Home",
+  "indicators": "Indicators",
   "language": "English",
   "lightTheme": "Light Theme",
   "live": "Live",
@@ -36,6 +39,9 @@
   "ok": "Okay",
   "ongoingExam": "Ongoing Exam",
   "run": "Run!",
+  "somewhat": "Somewhat",
   "stats": "Stats",
-  "takeTest": "Take test"
+  "superBad": "Super Bad",
+  "takeTest": "Take test",
+  "tooGood": "Too Good"
 }

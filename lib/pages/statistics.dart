@@ -32,7 +32,7 @@ class Statistics extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Indicators',
+              strings(context).indicators,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(
@@ -46,46 +46,46 @@ class Statistics extends StatelessWidget {
                 children: [
                   Container(
                     color: Colors.red[400],
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Super Bad',
-                        style: TextStyle(color: Colors.white),
+                        strings(context).superBad,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
                   Container(
                     color: Colors.orange[400],
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Bad',
-                        style: TextStyle(color: Colors.white),
+                        strings(context).bad,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
                   Container(
                     color: Colors.yellow[400],
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Somewhat',
-                        style: TextStyle(color: Colors.black),
+                        strings(context).somewhat,
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
                   Container(
                     color: Colors.green[400],
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Good',
-                        style: TextStyle(color: Colors.white),
+                        strings(context).good,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
                   Container(
                     color: Colors.purple[400],
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Too Good',
-                        style: TextStyle(color: Colors.white),
+                        strings(context).tooGood,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -95,56 +95,52 @@ class Statistics extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SizedBox(
-                height: stats.topicStats.length * 80 + 20,
-                child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    primaryYAxis:
-                        NumericAxis(minimum: 0, maximum: 170, interval: 25),
-                    series: <ChartSeries<TopicStat, String>>[
-                      BarSeries<TopicStat, String>(
-                        width: 0.7,
-                        dataSource: stats.topicStats,
-                        xValueMapper: (TopicStat data, _) {
-                          return data.topic;
-                        },
-                        yValueMapper: (TopicStat data, _) {
-                          if (data.proficiencyIndex > 170) {
-                            data.proficiencyIndex = 170;
-                          }
-                          return data.proficiencyIndex;
-                        },
-                        name: 'Gold',
-                        pointColorMapper: (datum, index) {
-                          if (datum.proficiencyIndex < 40) {
-                            return Colors.red[400];
-                          } else if (datum.proficiencyIndex < 70) {
-                            return Colors.orange[400];
-                          } else if (datum.proficiencyIndex < 100) {
-                            return Colors.yellow[400];
-                          } else if (datum.proficiencyIndex < 120) {
-                            return Colors.green[400];
-                          } else {
-                            return Colors.purple[400];
-                          }
-                        },
-                        // dataLabelMapper: (datum, index) {
-                        //   if (datum.proficiencyIndex < 40) {
-                        //     return 'Super Bad';
-                        //   } else if (datum.proficiencyIndex < 70) {
-                        //     return 'Bad';
-                        //   } else if (datum.proficiencyIndex < 100) {
-                        //     return 'Somewhat';
-                        //   } else if (datum.proficiencyIndex < 120) {
-                        //     return 'Good';
-                        //   } else {
-                        //     return 'Too Good';
-                        //   }
-                        // },
-                      )
-                    ]),
+            SizedBox(
+              height: stats.topicStats.length * 60 + 20,
+              child: SfCartesianChart(
+                primaryXAxis: CategoryAxis(),
+                primaryYAxis:
+                    NumericAxis(minimum: 0, maximum: 170, interval: 25),
+                series: <ChartSeries<TopicStat, int>>[
+                  BarSeries(
+                    width: 0.9,
+                    dataSource: stats.topicStats,
+                    sortingOrder: SortingOrder.ascending,
+                    xValueMapper: (_, i) {
+                      return i;
+                    },
+                    yValueMapper: (TopicStat data, _) {
+                      if (data.proficiencyIndex > 170) {
+                        data.proficiencyIndex = 170;
+                      }
+                      return data.proficiencyIndex;
+                    },
+                    borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20)),
+                    pointColorMapper: (datum, index) {
+                      if (datum.proficiencyIndex < 40) {
+                        return Colors.red[400];
+                      } else if (datum.proficiencyIndex < 70) {
+                        return Colors.orange[400];
+                      } else if (datum.proficiencyIndex < 100) {
+                        return Colors.yellow[400];
+                      } else if (datum.proficiencyIndex < 120) {
+                        return Colors.green[400];
+                      } else {
+                        return Colors.purple[400];
+                      }
+                    },
+                    dataLabelMapper: (datum, index) {
+                      return datum.topic;
+                    },
+                    dataLabelSettings: const DataLabelSettings(
+                      isVisible: true,
+                      textStyle:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  )
+                ],
               ),
             ),
           ],

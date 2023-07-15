@@ -1,42 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:preptime/pages/routes/stats_destination.dart';
-import 'package:preptime/pages/routes/class_destination.dart';
-import 'package:preptime/pages/routes/exam_destination.dart';
-
-import '../pages/routes/home_destination.dart';
 
 class Destination {
-  const Destination(
-      {required this.icon,
-      required this.label,
-      required this.route,
-      required this.destination});
+  const Destination({
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
 
   final IconData icon;
   final String label;
   final String route;
-  final Widget destination;
 }
 
-const List<Destination> destinations = [
+List<Destination> destinations = const [
   Destination(
-      icon: Icons.home_rounded,
-      label: 'Home',
-      route: '/',
-      destination: HomeDestination()),
+    icon: Icons.home_rounded,
+    label: 'Home',
+    route: '/',
+  ),
   Destination(
-      icon: Icons.edit_rounded,
-      label: 'Exams',
-      route: '/exams',
-      destination: ExamDestination()),
+    icon: Icons.edit_rounded,
+    label: 'Exams',
+    route: '/exams',
+  ),
   Destination(
-      icon: Icons.book_rounded,
-      label: 'Courses',
-      route: '/courses',
-      destination: ClassDestination()),
+    icon: Icons.book_rounded,
+    label: 'Courses',
+    route: '/courses',
+  ),
   Destination(
-      icon: Icons.leaderboard_rounded,
-      label: 'Stats',
-      route: '/stats',
-      destination: BoardDestination()),
+    icon: Icons.leaderboard_rounded,
+    label: 'Stats',
+    route: '/stats',
+  ),
 ];

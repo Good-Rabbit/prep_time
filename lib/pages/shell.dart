@@ -7,14 +7,13 @@ import 'package:preptime/pages/class_selector.dart';
 import 'package:preptime/pages/fragments/live_ticker.dart';
 import 'package:preptime/pages/fragments/popup_item_row.dart';
 import 'package:preptime/pages/login.dart';
+import 'package:preptime/router/destinations.dart';
 import 'package:preptime/router/navigation_bar.dart';
 import 'package:preptime/router/navigation_rail.dart';
 import 'package:preptime/services/exam_provider.dart';
 import 'package:preptime/services/intl.dart';
 import 'package:preptime/services/settings_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../router/destinations.dart';
 
 // Shell widget for containing the destinations
 class Shell extends StatefulWidget {

@@ -1,6 +1,7 @@
 {
   "@@locale": "bn",
   "appname": "প্রেপ টাইম",
+  "bad": "খারাপ",
   "changeClass": "ক্লাস পরিবর্তন করুন",
   "classValue": "ক্লাস",
   "classes": "টি ক্লাস",
@@ -10,7 +11,9 @@
   "examId": "পরীক্ষা আইডি",
   "examOngoing": "পরীক্ষা ইতোমদ্ধে চলছে!",
   "exams": "পরীক্ষা",
+  "good": "ভাল",
   "home": "হোম",
+  "indicators": "সূচকসমুহ",
   "language": "বাংলা",
   "lightTheme": "উজ্জ্বল থিম",
   "live": "লাইভ",
@@ -23,6 +26,9 @@
   "ok": "থিক আছে",
   "ongoingExam": "চলতি পরীক্ষা",
   "run": "দৌড়!",
+  "somewhat": "চলে",
   "stats": "স্টাটস",
-  "takeTest": "পরীক্ষা দিন"
+  "superBad": "চরম খারাপ",
+  "takeTest": "পরীক্ষা দিন",
+  "tooGood": "বেশি ভাল"
 }
